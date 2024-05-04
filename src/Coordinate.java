@@ -1,29 +1,49 @@
 public class Coordinate {
+    // width of board
     private int xCoor;
+    // height of board
     private int yCoor;
 
+    // location of the top left corner point
+    private Location location;
+
     // constructor
-    public Coordinate(int x, int y) {
-        xCoor = x;
-        yCoor = y;
+    public Coordinate(int width, int height, Location location) {
+        this.xCoor = width;
+        this.yCoor = height;
+        this.location = location;
     }
 
-    public Coordinate() {
-        xCoor = 1;
-        yCoor = 1;
+    public Coordinate(int x, int y, int width, int height) {
+        this(width, height, new Location(x, y));
     }
 
-    // getter method
-    public int getX() {
+    // get width of board
+    public int getXCoor() {
         return xCoor;
     }
 
-    public int getY() {
+    // get height of board
+    public int getYCoor() {
         return yCoor;
     }
 
-    // return coordinate as string by using to string method
-    public String toString() {
-        return "(" + xCoor + "," + yCoor + ")";
+    // get position within board
+    public Location getLocation() {
+        return location;
+    }
+
+    public void setXCoor(int xCoor) {
+        this.xCoor = xCoor;
+    }
+
+    public void setYCoor(int yCoor) {
+        this.yCoor = yCoor;
+    }
+
+    // check if the targetLocation is within the coordinate
+    public boolean isLocationWithinCoordinate(Location targetLocation) {
+        return targetLocation.x >= location.x && targetLocation.y >= location.y && targetLocation.x < location.x + xCoor
+                && targetLocation.y < location.y + yCoor;
     }
 }

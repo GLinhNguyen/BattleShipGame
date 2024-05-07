@@ -164,6 +164,36 @@ public class StartingWindow implements KeyListener {
         ImageIcon settingIcon = new ImageIcon("/Users/giahuy/Documents/GitHub/BattleShipGame/Graphics/settingButton.png");
         
         settingsButton = new JButton(settingIcon);
+        settingsButton.setFocusPainted(false);
+        settingsButton.setRolloverEnabled(false);
+        
+        final ImageIcon hoverSettingIcon = new ImageIcon("/Users/giahuy/Documents/GitHub/BattleShipGame/Graphics/hoverSetting.png");
+        settingsButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                settingsButton.setIcon(hoverSettingIcon);
+                constraints.gridx = 0;
+                constraints.gridy = 2;
+                constraints.insets = new Insets(0, 0, 10, 0);
+                settingsButton.setMargin(new Insets(0, 0, 0, 0));
+                settingsButton.setBorder(null);
+                constraints.fill = GridBagConstraints.HORIZONTAL;
+                startPanel.add(settingsButton, constraints);
+            }
+        
+            @Override
+            public void mouseExited(MouseEvent e) {
+                settingsButton.setIcon(settingIcon);
+                constraints.gridx = 0;
+                constraints.gridy = 2;
+                constraints.insets = new Insets(0, 0, 10, 0);
+                settingsButton.setMargin(new Insets(0, 0, 0, 0));
+                settingsButton.setBorder(null);
+                constraints.fill = GridBagConstraints.HORIZONTAL;
+                startPanel.add(settingsButton, constraints);
+            }
+        });
+        
         constraints.gridx = 0;
         constraints.gridy = 2;
         settingsButton.setMargin(new Insets(0, 0, 0, 0));

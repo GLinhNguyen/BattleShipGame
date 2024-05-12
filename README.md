@@ -2,7 +2,7 @@
 Data Structure and Algorithms Project
 
 ## Members:
-+ Nguyễn Gia Linh (Leader)
++ Nguyễn Ngọc Gia Linh 
 + Nguyễn Gia Huy
 + Âu Nguyễn Nhật Thư
 + Phạm Hoài Nhật Nam

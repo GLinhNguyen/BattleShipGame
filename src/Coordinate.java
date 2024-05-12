@@ -3,12 +3,12 @@
 
 public class Coordinate {
     // width of board
-    private int xCoor;
+    protected int xCoor;
     // height of board
-    private int yCoor;
+    protected int yCoor;
 
     // location of the top left corner point
-    private Location location;
+    protected Location location;
 
     // constructor
     public Coordinate(int width, int height, Location location) {

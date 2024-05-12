@@ -1,3 +1,4 @@
+/* location class: represent a single position x,y on a board.  */
 public class Location {
 
     // horizontal moving unit vector

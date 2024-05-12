@@ -1,3 +1,6 @@
+/*coordinate class: defines a simple rectangle which location on the top left corner,
+ * width(xCoor) and height (yCoor) to represent the size of the rectangle. */
+
 public class Coordinate {
     // width of board
     private int xCoor;
@@ -14,7 +17,7 @@ public class Coordinate {
         this.location = location;
     }
 
-    public Coordinate(int x, int y, int width, int height) {
+    public Coordinate(int width, int height, int x, int y) {
         this(width, height, new Location(x, y));
     }
 

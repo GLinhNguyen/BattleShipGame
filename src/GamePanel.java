@@ -1,31 +1,57 @@
 
-import java.awt.*;
-import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import javax.swing.*;
-import java.io.*;
 
 public class GamePanel extends JPanel implements MouseListener, MouseMotionListener{
 
     // Initialize the game state, which will be used to determine what the player is currently doing
-    public enum GameState{ PlacingShips, Firing, GameOver};
 
     // Show a panel to let user know what state they are in
-    public StatusPanel statusPanel;
+
+
+    public StatusPanel statusMessage;
 
     // Computer's grid 
     private SelectionGrid computer;
 
     // Player's grid
     private Player player;
-
+    private GameState currentState;
 
 
     public GamePanel() {
         addMouseListener(this);
         addMouseMotionListener(this);
+        currentState = GameState.PLACING_SHIPS;
+    }
+
+    public void updateGameState(GameState newState) {
+        switch (currentState) {
+            case PLAYING:
+                if(newState == GameState.GAME_WIN) {
+                    statusMessage.getMessage();
+                } else if(newState == GameState.GAME_LOSS) {
+                    statusMessage.getMessage();
+                }
+                break;
+            case PLACING_SHIPS:
+                if(newState == GameState.PLAYING) {
+                    statusMessage.getMessage();
+                }
+                break;
+            case GAME_WIN:
+                //play again
+                break;
+
+            case GAME_LOSS:
+                //restart the game
+                break;
+
+
+        }
+        currentState = newState;
     }
     public static boolean debugModeActive() {
         return true;

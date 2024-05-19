@@ -72,5 +72,5 @@ public class Location {
     public String toString() {
         return "(" + x + ", " + y + ")";
     }
-
 }
+

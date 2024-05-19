@@ -1,4 +1,6 @@
-public class EasyBot extends Bot{
+import java.util.Collections;
+
+public class EasyBot {
     // randoming the order to move
     // playegrid reference the player 's grid to attack
     public EasyBot(SelectionGrid playerGrid) {

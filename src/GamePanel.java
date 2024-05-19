@@ -27,7 +27,9 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
         addMouseListener(this);
         addMouseMotionListener(this);
     }
-
+    public static boolean debugModeActive() {
+        return true;
+    }
     @Override
     public void mouseDragged(MouseEvent e) {
         // TODO Auto-generated method stub

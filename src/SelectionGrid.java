@@ -62,7 +62,7 @@ public class SelectionGrid extends Coordinate {
      */
     public void paint(Graphics g) {
         for (Ship ship : ships) {
-            if (showShips || GamePanel.debugModeActive || ship.isDestroyed()) {
+            if (showShips || GamePanel.debugModeActive() || ship.isDestroyed()) {
                 ship.paint(g);
             }
         }
@@ -142,7 +142,7 @@ public class SelectionGrid extends Coordinate {
         if (!isLocationWithinCoordinate(new Location(mouseX, mouseY)))
             return new Location(-1, -1);
 
-        return new Locaion((mouseX - location.x) / cellSize, (mouseY - location.y) / cellSize);
+        return new Location((mouseX - location.x) / cellSize, (mouseY - location.y) / cellSize);
     }
 
     /**

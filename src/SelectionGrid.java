@@ -51,6 +51,10 @@ public class SelectionGrid extends Coordinate {
         showShips = false;
     }
 
+    public SelectionGrid() {
+        this(0, 0);
+    }
+
 
     /**
      * Draws the ships if all ships on this grid are to be shown, or if debug mode

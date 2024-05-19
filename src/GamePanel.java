@@ -97,4 +97,28 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'mouseExited'");
     }
+
+
+    public void startGame() {
+    // Initialize game components
+    statusMessage = new StatusPanel(0, 0);
+    player = new Player();
+    computer = new SelectionGrid();
+
+    // Start the game loop
+    while (true) {
+        // Update the game state
+        updateGameState(currentState);
+
+        // Redraw the game panel
+        repaint();
+
+        // Pause for a short period before the next iteration
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+}
 }

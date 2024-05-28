@@ -38,8 +38,8 @@ public class StartingWindow implements KeyListener {
     private JButton settingsButton;
     
     public  Image bgImage;
-    
-    
+
+
     
      public static void main(String[] args) {
         EventQueue.invokeLater(() -> {
@@ -71,7 +71,7 @@ public class StartingWindow implements KeyListener {
 
         // Load the background image
         try {
-            bgImage = ImageIO.read(new File("/Users/giahuy/Documents/GitHub/BattleShipGame/Graphics/background.png"));
+            bgImage = ImageIO.read(getClass().getResourceAsStream("/Graphics/Background.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -101,28 +101,29 @@ public class StartingWindow implements KeyListener {
         // Add components to the start panel
 
         // Title
-        JLabel title = new JLabel("Battleship Game");
-        title.setFont(new Font("Mighty Souly", Font.PLAIN, 30));
-        title.setBackground(Color.white);
-        title.setForeground(Color.decode("#7F6DF2"));
-        constraints.gridx = 0;
-        constraints.gridy = 0;
-        constraints.gridwidth = 5; // Span across 5 columns
-        constraints.insets = new Insets(0, 0, 100, 0);
-        startPanel.add(title, constraints);
-       
+//        JLabel title = new JLabel("Battleship Game");
+//        title.setFont(new Font("Mighty Souly", Font.PLAIN, 30));
+//        title.setBackground(Color.white);
+//        title.setForeground(Color.decode("#7F6DF2"));
+//        constraints.gridx = 0;
+//        constraints.gridy = 0;
+//        constraints.gridwidth = 5; // Span across 5 columns
+//        constraints.insets = new Insets(0, 0, 100, 0);
+//        startPanel.add(title, constraints);
+//
         // Play button
         // Load the button image
-        final ImageIcon buttonIcon = new ImageIcon("/Users/giahuy/Documents/GitHub/BattleShipGame/Graphics/playButton.png");
-        
+        final ImageIcon buttonIcon = new ImageIcon("/Graphics/play.png");
+
         
         playButton = new JButton(buttonIcon);
         playButton.setFocusPainted(false);
         playButton.setRolloverEnabled(false);
 
         // Load the hover image
-        final ImageIcon hoverIcon = new ImageIcon("/Users/giahuy/Documents/GitHub/BattleShipGame/Graphics/hoverPLay.png");
-        
+        final ImageIcon hoverIcon = new ImageIcon("/Graphics/hoverPlay.png");
+
+        // Add a MouseListener to change the icon on hover
         playButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -161,13 +162,14 @@ public class StartingWindow implements KeyListener {
         
  
         // Settings button
-        ImageIcon settingIcon = new ImageIcon("/Users/giahuy/Documents/GitHub/BattleShipGame/Graphics/settingButton.png");
+
+        ImageIcon settingIcon = new ImageIcon("/Graphics/settings.png");
         
         settingsButton = new JButton(settingIcon);
         settingsButton.setFocusPainted(false);
         settingsButton.setRolloverEnabled(false);
         
-        final ImageIcon hoverSettingIcon = new ImageIcon("/Users/giahuy/Documents/GitHub/BattleShipGame/Graphics/hoverSetting.png");
+        final ImageIcon hoverSettingIcon =new ImageIcon("/Graphics/hoverSettings.png");
         settingsButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {

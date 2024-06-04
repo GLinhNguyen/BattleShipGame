@@ -1,3 +1,5 @@
+package Functions;
+
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -103,7 +105,7 @@ public class Ship {
      * Updates the position to draw the ship at to the newPosition.
      *
      * @param gridPosition Position where the ship is now on the grid.
-     * @param drawPosition Position to draw the Ship at in Pixels.
+     * @param drawPosition Position to draw the Functions.Ship at in Pixels.
      */
     public void setDrawPosition(Location gridPosition, Location drawPosition) {
         this.drawPosition = drawPosition;

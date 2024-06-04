@@ -1,3 +1,6 @@
+package Game;
+
+import Functions.*;
 
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -16,7 +19,7 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
     // Computer's grid 
     private SelectionGrid computer;
 
-    // Player's grid
+    // Functions.Player's grid
     private Player player;
     private GameState currentState;
 

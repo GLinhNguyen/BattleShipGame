@@ -1,3 +1,5 @@
+package Functions;
+
 import java.awt.*;
 public class Marker extends Coordinate {
     // color ship located
@@ -36,7 +38,7 @@ public class Marker extends Coordinate {
     public void setAsShip(Ship ship) {
         this.shipAtMarker = ship;
     }
-    //Gets if this marker has an associated Ship.Return true if a ship has been set
+    //Gets if this marker has an associated Functions.Ship.Return true if a ship has been set
     public boolean isShip() {
         return shipAtMarker != null;
     }

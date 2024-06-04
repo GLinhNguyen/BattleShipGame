@@ -1,7 +1,9 @@
-
-/* SelectionGrid class: 
+package Functions;
+/* Functions.SelectionGrid class:
 define the grid for storing ships
 deifine the grid of markers to indicate hit/ miss detection  */
+
+import Game.GamePanel;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -13,7 +15,7 @@ public class SelectionGrid extends Coordinate {
     // size of each grid cell in pixel
     public static final int cellSize = 30;
 
-    // number of grid cell in x axis (width) and y axis (height)
+    // number of grid cell in x-axis (width) and y-axis (height)
     public static final int gridWidth = 10;
     public static final int gridHeight = 10;
 
@@ -82,7 +84,7 @@ public class SelectionGrid extends Coordinate {
     }
 
     /**
-     * Resets the SelectionGrid by telling all the markers to reset,
+     * Resets the Functions.SelectionGrid by telling all the markers to reset,
      * removing all ships from the grid, and defaulting back to not show any ships,
      * and a state where no ships have been destroyed.
      */

@@ -1,8 +1,11 @@
+import Functions.Location;
+import Game.GameState;
+
 import java.util.List;
 import java.util.ArrayList;
 
 //GameStatus.java is the interface to show messages to players
-public class StatusPanel extends Location{
+public class StatusPanel extends Location {
 
     private List<Message> messages;
     private GameState currentState;

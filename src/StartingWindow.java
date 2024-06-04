@@ -219,7 +219,7 @@ public class StartingWindow implements KeyListener {
         constraints.gridy = 2;
         constraints.gridwidth = 2;
         settingPanel.add(choosePlayerLabel, constraints);
-        String[] choices = { "Player", "Computer", "Random" };
+        String[] choices = { "Functions.Player", "Computer", "Random" };
         JComboBox<String> whoPlaysFirstDropdown = new JComboBox<>(choices);
         whoPlaysFirstDropdown.setSelectedIndex(0);
         constraints.gridx = 2;
@@ -234,20 +234,6 @@ public class StartingWindow implements KeyListener {
         constraints.insets = new Insets(50, 10, 0, 10);
             constraints.gridy = 1;
             settingPanel.add(timePerTurnOption3, constraints);
-            
-            // Add a label and dropdown for who plays first
-            JLabel choosePlayerLabel = new JLabel("Choose who plays first: ");
-            constraints.gridx = 0;
-            constraints.gridy = 2; 
-            constraints.gridwidth = 2; // Span across 3 columns
-            settingPanel.add(choosePlayerLabel, constraints);
-            String [] choices = {"Player", "Computer", "Random"};
-            JComboBox<String> whoPlaysFirstDropdown = new JComboBox<>(choices);
-            whoPlaysFirstDropdown.setSelectedIndex(0);
-            constraints.gridx = 2;
-            constraints.gridy = 2;
-            constraints.gridwidth = 3; // Span across 3 columns
-            settingPanel.add(whoPlaysFirstDropdown, constraints);
 
             // Add start game button
             startGameButton = new JButton("Play Game");

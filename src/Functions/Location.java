@@ -1,10 +1,28 @@
+package Functions;
+
 /* location class: represent a single position x,y on a board.  */
 public class Location {
 
-    // horizontal moving unit vector
-    public static final Location horizontal = new Location(1, 0);
-    // vertical moving unit vector
-    public static final Location vertical = new Location(0, 1);
+    /**
+     * Down moving unit vector.
+     */
+    public static final Location DOWN = new Location(0,1);
+    /**
+     * Up moving unit vector.
+     */
+    public static final Location UP = new Location(0,-1);
+    /**
+     * Left moving unit vector.
+     */
+    public static final Location LEFT = new Location(-1,0);
+    /**
+     * Right moving unit vector.
+     */
+    public static final Location RIGHT = new Location(1,0);
+    /**
+     * Zero unit vector.
+     */
+    public static final Location ZERO = new Location(0,0);
 
     // value of location
     public int x;

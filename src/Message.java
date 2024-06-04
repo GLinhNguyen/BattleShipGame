@@ -1,3 +1,5 @@
+import Game.GameState;
+
 public class Message {
     private String topLine;
     private String bottomLine;

@@ -142,10 +142,9 @@ import Functions.Location;
 import Game.GameState;
 import java.util.List;
 import java.util.ArrayList;
-import javax.swing.text.Position;
 import java.awt.*;
 
-public class StatusPanel extends Location {
+public class StatusPanel extends Coordinate {
 
     private List<Message> messages;
     private GameState currentState;
@@ -158,41 +157,42 @@ public class StatusPanel extends Location {
     private Font font = new Font("Arial", Font.BOLD, 12);
 
     private boolean isSideways;
-    protected String topString;
-    protected String bottomString;
-    protected final String placingShipLine1 = "Place your ships";
-    protected final String placingShipLine2 = "Tap Space to rotate your ships";
+    protected String announcement;
 
+
+    private final String gameOverBottomLine = "Press R to restart.";
+
+    public StatusPanel(Location location){
+        super(location);
+    }
     public StatusPanel(Location location, int width, int height) {
         super(location, width, height);
         this.location = location != null ? location : new Location(0, 0); // Ensure location is not null
-        coordinate = new Coordinate(width, height, x, y);
-        initMessages();
-        topString = placingShipLine1; // Set the top string
-        bottomString = placingShipLine2; // Set the bottom string
+        getMessage();
         currentState = GameState.PLACING_SHIPS;
     }
 
-    public void initMessages() {
+    public String getMessage() {
         messages = new ArrayList<>();
-        messages.add(new Message("Place your ships", "Click on the grid to place your ships", GameState.PLACING_SHIPS));
+        messages.add(new Message("Place your ships", "Tab Space to rotate your ships", GameState.PLACING_SHIPS));
         messages.add(new Message("Your turn", "Click on the grid to fire", GameState.PLAYING));
         messages.add(new Message("You win!", "You sunk all the enemy ships", GameState.GAME_WIN));
         messages.add(new Message("You lose", "All your ships have been sunk", GameState.GAME_LOSS));
+        return messages.get(0).getMessage();
     }
 
-    public String getMessage() {
-        if (currentState == GameState.PLACING_SHIPS) {
-            return messages.get(0).getMessage();
-        } else if (currentState == GameState.PLAYING) {
-            return messages.get(1).getMessage();
-        } else if (currentState == GameState.GAME_WIN) {
-            return messages.get(2).getMessage();
-        } else if (currentState == GameState.GAME_LOSS) {
-            return messages.get(3).getMessage();
-        }
-        return "";
-    }
+//    public String getMessage(String currentState) {
+//        if (currentState == GameState.PLACING_SHIPS) {
+//            return messages.get(0).getMessage();
+//        } else if (currentState == GameState.PLAYING) {
+//            return messages.get(1).getMessage();
+//        } else if (currentState == GameState.GAME_WIN) {
+//            return messages.get(2).getMessage();
+//        } else if (currentState == GameState.GAME_LOSS) {
+//            return messages.get(3).getMessage();
+//        }
+//        return "";
+//    }
 
     public void destroySection() {
         destroyedSections++;
@@ -216,8 +216,8 @@ public class StatusPanel extends Location {
     }
 
     public void reset() {
-        topString = placingShipLine1;
-        bottomString = placingShipLine2;
+        announcement = messages.get(0).getMessage();
+
     }
 
     public List<Location> getOccupiedCoordinates() {
@@ -241,40 +241,31 @@ public class StatusPanel extends Location {
         }
         
         g.setColor(Color.LIGHT_GRAY);
-        g.fillRect(location.x, location.y, coordinate.getXCoor(), coordinate.getYCoor());
+        g.fillRect(location.x, location.y, width, height);
         g.setColor(Color.BLACK);
         g.setFont(font);
-        if (topString == null || bottomString == null) {
+        if (announcement == null) {
             // Handle gracefully if topString or bottomString is null
-            throw new NullPointerException("Top or bottom string cannot be null");
+            throw new NullPointerException("string cannot be null");
         }
-        int strWidth = g.getFontMetrics().stringWidth(topString);
+        int strWidth = g.getFontMetrics().stringWidth(announcement);
        
         if (strWidth < 0) {
             // Handle gracefully if string width is negative
            throw new NullPointerException("String width cannot be negative");
         }
-        g.drawString(topString, location.x + coordinate.getXCoor() / 2 - strWidth / 2, location.y + 20);
-        strWidth = g.getFontMetrics().stringWidth(bottomString);
-        g.drawString(bottomString, location.x + coordinate.getXCoor() / 2 - strWidth / 2, location.y + 40);
-       
+        g.drawString(announcement, location.x + width - strWidth / 3, location.y + 20);
+
     }
 
-    public void setBottomString(String string) {
-        this.bottomString = string;
+    public void setAnnouncement(String string) {
+        this.announcement = string;
     }
 
-    public void setTopString(String string) {
-        this.topString = string;
-    }
+
 
     public void showGameOver(boolean b) {
-        if (b) {
-            topString = "Game Over"; // Set the top string
-            bottomString = "You win!"; // Set the bottom string
-        } else {
-            topString = "Game Over"; // Set the top string
-            bottomString = "You lose!"; // Set the bottom string
-        }
+        announcement = (b) ? messages.get(2).getMessage() : messages.get(3).getMessage() ;
+        announcement = gameOverBottomLine;
     }
 }

@@ -300,7 +300,7 @@ public class GamePanel_test extends JPanel implements MouseListener, MouseMotion
         setPreferredSize(new Dimension(800, 600)); // Set to your desired dimensions
         currentState = GameState.PLACING_SHIPS;
         computer = new SelectionGrid(0, 0);
-        playerGrid = new SelectionGrid(0, computer.getYCoor() + 50);
+        playerGrid = new SelectionGrid(0, computer.getHeight() + 50);
 
         if (aiChoice == 0) {
             aiController = new EasyBot(playerGrid);
@@ -308,8 +308,8 @@ public class GamePanel_test extends JPanel implements MouseListener, MouseMotion
             aiController = new NightmareBot(playerGrid, aiChoice == 2, aiChoice == 2);
         }
 
-        Location statusPanelLocation = new Location(80, computer.getYCoor() + 1);
-        statusPanel = new StatusPanel(statusPanelLocation, computer.getXCoor(), 49);
+        Location statusPanelLocation = new Location(80, computer.getHeight() + 1);
+        statusPanel = new StatusPanel(statusPanelLocation, computer.getWidth(), 49);
 
         setLayout(new BorderLayout());
 
@@ -376,8 +376,7 @@ public class GamePanel_test extends JPanel implements MouseListener, MouseMotion
             updateShipPlacement(tempPlacingPosition);
         } else {
             gameState = GameState.PLAYING;
-            statusPanel.setTopString("Attack the Computer!");
-            statusPanel.setBottomString("Destroy all Ships to win!");
+            statusPanel.setAnnouncement("Attack the Computer!");
         }
     }
 
@@ -398,7 +397,7 @@ public class GamePanel_test extends JPanel implements MouseListener, MouseMotion
         if (hit && computer.getMarkerAtLocation(targetPosition).getAssociatedShip().isDestroyed()) {
             destroyed = "(Destroyed)";
         }
-        statusPanel.setTopString("Player " + hitMiss + " " + targetPosition + destroyed);
+        statusPanel.setAnnouncement("Player " + hitMiss + " " + targetPosition + destroyed);
         if (computer.areAllShipsDestroyed()) {
             gameState = GameState.GAME_WIN;
             statusPanel.showGameOver(true);
@@ -413,7 +412,7 @@ public class GamePanel_test extends JPanel implements MouseListener, MouseMotion
         if (hit && playerGrid.getMarkerAtLocation(aiMove).getAssociatedShip().isDestroyed()) {
             destroyed = "(Destroyed)";
         }
-        statusPanel.setBottomString("Computer " + hitMiss + " " + aiMove + destroyed);
+        statusPanel.setAnnouncement("Computer " + hitMiss + " " + aiMove + destroyed);
         if (playerGrid.areAllShipsDestroyed()) {
             gameState = GameState.GAME_LOSS;
             statusPanel.showGameOver(false);

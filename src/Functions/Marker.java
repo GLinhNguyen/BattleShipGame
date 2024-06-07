@@ -50,7 +50,7 @@ public class Marker extends Coordinate {
         if(!showMarker) return;
 
         g.setColor(isShip() ? HIT_COLOUR : MISS_COLOUR);
-        g.fillRect(location.x+PADDING+1, location.y+PADDING+1, xCoor-PADDING*2, yCoor-PADDING*2);
+        g.fillRect(location.x+PADDING+1, location.y+PADDING+1, width-PADDING*2, height-PADDING*2);
 
     }
 

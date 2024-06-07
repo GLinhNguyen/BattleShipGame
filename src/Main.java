@@ -1,4 +1,4 @@
-import Game.GamePanel;
+
 import Game.GamePanel_test;
 
 import javax.swing.JFrame;
@@ -30,11 +30,10 @@ public class Main implements KeyListener{
         frame.setResizable(false);
         gamePanel = new GamePanel_test (difficultyChoice);
         frame.getContentPane().add(gamePanel);
-        //frame.addKeyListener(new Main());
         frame.pack();
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
-        // frame.addKeyListener(new Main());
+        frame.addKeyListener(new Main());
     }
     @Override
     public void keyPressed(KeyEvent e) {

@@ -4,32 +4,40 @@ package Functions;/*coordinate class: defines a simple rectangle which location 
 
 public class Coordinate {
     // width of board
-    protected int xCoor;
+    protected int width;
     // height of board
-    protected int yCoor;
+    protected int height;
 
     // location of the top left corner point
     protected Location location;
 
     // constructor
     public Coordinate(Location location, int width, int height) {
-        this.xCoor = width;
-        this.yCoor = height;
+        this.width = width;
+        this.height = height;
         this.location = location;
     }
+    /**
+     * @param xCoor X coordinate of the top left corner.
+     * @param yCoor Y coordinate of the top left corner.
+     * @param width Width of the rectangle.
+     * @param height Height of the rectangle.
+     */
+    public Coordinate(int xCoor, int yCoor, int width, int height) {
+        this(new Location(xCoor, yCoor),width, height );
+    }
 
-    public Coordinate(int width, int height, int x, int y) {
-        this(new Location(x, y),width, height );
+    public Coordinate(Location location) {
     }
 
     // get width of board
-    public int getXCoor() {
-        return xCoor;
+    public int getWidth() {
+        return width;
     }
 
     // get height of board
-    public int getYCoor() {
-        return yCoor;
+    public int getHeight() {
+        return height;
     }
 
     // get position within board
@@ -37,17 +45,17 @@ public class Coordinate {
         return location;
     }
 
-    public void setXCoor(int xCoor) {
-        this.xCoor = xCoor;
+    public void setWidth(int width) {
+        this.width = width;
     }
 
-    public void setYCoor(int yCoor) {
-        this.yCoor = yCoor;
+    public void setHeight(int height) {
+        this.height = height;
     }
 
     // check if the targetLocation is within the coordinate
     public boolean isLocationWithinCoordinate(Location targetLocation) {
-        return targetLocation.x >= location.x && targetLocation.y >= location.y && targetLocation.x < location.x + xCoor
-                && targetLocation.y < location.y + yCoor;
+        return targetLocation.x >= location.x && targetLocation.y >= location.y && targetLocation.x < location.x + width
+                && targetLocation.y < location.y + height;
     }
 }

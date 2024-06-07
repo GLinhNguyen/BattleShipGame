@@ -3,7 +3,10 @@ package Functions;
 define the grid for storing ships
 deifine the grid of markers to indicate hit/ miss detection  */
 
-import Game.GamePanel;
+
+
+import Game.GamePanel_test;
+//import Game.GamePanel;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -53,9 +56,9 @@ public class SelectionGrid extends Coordinate implements LayoutManager {
         showShips = false;
     }
 
-    public SelectionGrid() {
-        this(0, 0);
-    }
+//    public SelectionGrid() {
+//        this(0, 0);
+//    }
 
 
     /**
@@ -69,7 +72,7 @@ public class SelectionGrid extends Coordinate implements LayoutManager {
      */
     public void paint(Graphics g) {
         for (Ship ship : ships) {
-            if (showShips || GamePanel.debugModeActive() || ship.isDestroyed()) {
+            if (showShips || GamePanel_test.debugModeActive() || ship.isDestroyed()) {
                 ship.paint(g);
             }
         }
@@ -210,13 +213,13 @@ public class SelectionGrid extends Coordinate implements LayoutManager {
 
         // Draw vertical lines
         int y2 = location.y;
-        int y1 = location.y + yCoor;
+        int y1 = location.y + height;
         for (int x = 0; x <= gridWidth; x++)
             g.drawLine(location.x + x * cellSize, y1, location.x + x * cellSize, y2);
 
         // Draw horizontal lines
         int x2 = location.x;
-        int x1 = location.x + xCoor;
+        int x1 = location.x + width;
         for (int y = 0; y <= gridHeight; y++)
             g.drawLine(x1, location.y + y * cellSize, x2, location.y + y * cellSize);
     }
@@ -311,13 +314,11 @@ public class SelectionGrid extends Coordinate implements LayoutManager {
     }
 
     public int getHeight() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getHeight'");
+        return height;
     }
 
     public int getWidth() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getWidth'");
+        return width;
     }
 
     

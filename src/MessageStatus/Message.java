@@ -1,19 +1,37 @@
 package MessageStatus;
+import Functions.Location;
 import Game.GameState;
 
-public class Message {
-    private String topLine;
-    private String bottomLine;
+public class Message extends StatusPanel {
+    private String topString;
+    private String bottomString;
     public GameState state;
 
+
+    public Message(String topLine, String bottomLine) {
+    super (new Location(0, 0), 0, 0);
+    this.topString = topLine;
+    this.bottomString = bottomLine;
+    announcement = topString + "\n" + bottomString;
+    }
+    
     public Message(String topLine, String bottomLine, GameState state) {
-        this.topLine = topLine;
-        this.bottomLine = bottomLine;
+    super (new Location(0, 0), 0, 0);
+        this.topString = topLine;
+        this.bottomString = bottomLine;
         this.state = state;
+        announcement = topString + "\n" + bottomString;
     }
 
     public String getMessage() {
-        return topLine + "\n" + bottomLine;
+        return announcement;
+    }
+
+    public void setTopString(String string) {
+        this.topString = string;
+    }
+    public void setBottomString(String string) {
+        this.bottomString = string;
     }
 
 

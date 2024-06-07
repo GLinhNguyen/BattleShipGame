@@ -1,4 +1,4 @@
-/*
+
 package Functions;
 
 import java.util.Scanner;
@@ -36,4 +36,4 @@ public class Player {
     }
 }
 
-*/
+

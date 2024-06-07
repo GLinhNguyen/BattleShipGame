@@ -1,3 +1,4 @@
+package MessageStatus;
 import Game.GameState;
 
 public class Message {

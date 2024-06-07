@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class SelectionGrid extends Coordinate {
+public class SelectionGrid extends Coordinate implements LayoutManager {
 
     // size of each grid cell in pixel
     public static final int cellSize = 30;
@@ -308,5 +308,47 @@ public class SelectionGrid extends Coordinate {
                 markers[gridX][gridY + y].setAsShip(ships.get(ships.size() - 1));
             }
         }
+    }
+
+    public int getHeight() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getHeight'");
+    }
+
+    public int getWidth() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getWidth'");
+    }
+
+    
+
+    @Override
+    public void addLayoutComponent(String name, Component comp) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'addLayoutComponent'");
+    }
+
+    @Override
+    public void removeLayoutComponent(Component comp) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'removeLayoutComponent'");
+    }
+
+    @Override
+    public Dimension preferredLayoutSize(Container parent) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'preferredLayoutSize'");
+    }
+
+    @Override
+    public Dimension minimumLayoutSize(Container parent) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'minimumLayoutSize'");
+    }
+
+    @Override
+    public void layoutContainer(Container parent) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'layoutContainer'");
     }
 }

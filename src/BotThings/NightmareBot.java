@@ -9,25 +9,24 @@ import javax.swing.text.Position;
 
 public class NightmareBot extends Bot {
 
-    private List<Location> shipsHit;
-
+    private List<Location> shipHits;
+    
     private final boolean randomAi = false;
     private final boolean preferMovesFormingLine;
     private boolean maximizedAdjancentHits;
-    List<Location> shipHits = new ArrayList<>();
-
-
+    
     public NightmareBot(SelectionGrid playerGrid, boolean preferMovesFormingLine, boolean maximizedAdjancentHits) {
         super(playerGrid);
         this.preferMovesFormingLine = preferMovesFormingLine;
         this.maximizedAdjancentHits = maximizedAdjancentHits;
+        this.shipHits = new ArrayList<>();
         Collections.shuffle(possibleMoves);
     }
 
     @Override
     public void reset() {
         super.reset();
-        shipsHit.clear();
+        shipHits.clear();
         Collections.shuffle(possibleMoves);
     }
 
@@ -36,7 +35,7 @@ public class NightmareBot extends Bot {
         if (randomAi) System.out.println("\n BEGIN TURN!");
         Location selectMove;
 
-        if (!shipsHit.isEmpty()) {
+        if (!shipHits.isEmpty()) {
             // If there are ships that have been hit, try to find the next hit.
             if (preferMovesFormingLine) {
                 selectMove = getSmarterMove();

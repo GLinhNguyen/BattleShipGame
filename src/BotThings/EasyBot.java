@@ -6,18 +6,18 @@ import java.util.Collections;
 public class EasyBot extends Bot {
     public EasyBot(SelectionGrid playerGrid) {
         super(playerGrid);
-        Collections.shuffle(validMoves);
+        Collections.shuffle(possibleMoves);
     }
 
     public void reset() {
-        selectionGrid.reset();
-        Collections.shuffle(validMoves);
+        super.reset();
+        Collections.shuffle(possibleMoves);
     }
 
     @Override
     public Location selectMove() {
-        Location nextMove = validMoves.get(0);
-        validMoves.remove(0);
+        Location nextMove = possibleMoves.get(0);
+        possibleMoves.remove(0);
         return nextMove;
     }
 }

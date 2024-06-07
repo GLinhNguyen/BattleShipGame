@@ -1,4 +1,7 @@
+//rectangle
 package Functions;
+
+import javax.swing.text.Position;
 
 /* location class: represent a single position x,y on a board.  */
 public class Location {
@@ -36,7 +39,10 @@ public class Location {
     // create new location
     public Location(Location newlocation) {
         this.x = newlocation.x;
-        this.y = newlocation.y;
+        this.y = newlocation.y;}
+
+    public Location(Location location, int x2, int y2) {
+        //TODO Auto-generated constructor stub
     }
 
     // set location to the specified x and y coordinate
@@ -67,6 +73,9 @@ public class Location {
 
         x *= amount;
         y *= amount;
+    }
+    public Location getLocation() {
+        return new Location(x, y);
     }
 
     /**

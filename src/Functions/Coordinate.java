@@ -1,3 +1,4 @@
+//Rectangle
 package Functions;/*coordinate class: defines a simple rectangle which location on the top left corner,
  * width(xCoor) and height (yCoor) to represent the size of the rectangle. */
 
@@ -11,14 +12,14 @@ public class Coordinate {
     protected Location location;
 
     // constructor
-    public Coordinate(int width, int height, Location location) {
+    public Coordinate(Location location, int width, int height) {
         this.xCoor = width;
         this.yCoor = height;
         this.location = location;
     }
 
     public Coordinate(int width, int height, int x, int y) {
-        this(width, height, new Location(x, y));
+        this(new Location(x, y),width, height );
     }
 
     // get width of board

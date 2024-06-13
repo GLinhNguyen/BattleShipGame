@@ -269,6 +269,7 @@
 // }
 package Game;
 
+
 import MessageStatus.*;
 import Functions.*;
 import BotThings.*;
@@ -278,9 +279,9 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import javax.swing.*;
-import javax.swing.text.Position;
 
 import java.awt.*;
+import java.util.*;
 
 public class GamePanel_test extends JPanel implements MouseListener, MouseMotionListener {
     private StatusPanel statusPanel;
@@ -294,6 +295,13 @@ public class GamePanel_test extends JPanel implements MouseListener, MouseMotion
     public static boolean debugModeActive;
     private SelectionGrid player;
     private GameState currentState;
+
+    private Stack<Move> moveStack = new Stack<>();
+    private JButton undoButton;
+
+    private int redoLevel = 0;
+    private JButton redoButton;
+
 
     public GamePanel_test(int aiChoice) {
         setBackground(new Color(42, 136, 163));
@@ -318,6 +326,38 @@ public class GamePanel_test extends JPanel implements MouseListener, MouseMotion
 
         restart();
     }
+
+    public class Move {
+        private Location location; // Location of the move (attack or ship placement)
+        private boolean isPlayerMove; // indicate if it's a player or AI move
+
+        public Move(Location location, boolean isPlayerMove) {
+            this.location = location;
+            this.isPlayerMove = isPlayerMove;
+        }
+
+        // Getter for location
+        public Location getLocation() {
+            return location;
+        }
+
+        // Setter for location
+        public void setLocation(Location location) {
+            this.location = location;
+        }
+
+        // Getter for isPlayerMove
+        public boolean isPlayerMove() {
+            return isPlayerMove;
+        }
+
+        // Setter for isPlayerMove
+        public void setPlayerMove(boolean playerMove) {
+            isPlayerMove = playerMove;
+        }
+
+    }
+
 
     @Override
     public void paintComponent(Graphics g) {
@@ -364,8 +404,10 @@ public class GamePanel_test extends JPanel implements MouseListener, MouseMotion
         updateShipPlacement(targetPosition);
         if (playerGrid.canPlaceShipAt(targetPosition.x, targetPosition.y, SelectionGrid.boatSize[placingShipIndex], placingShip.isSideways())) {
             placeShip(targetPosition);
+            moveStack.push(new Move(targetPosition, true));
         }
     }
+
 
     private void placeShip(Location targetPosition) {
         placingShip.setShipPlacementColour(Ship.ShipPlacementColour.Placed);
@@ -382,6 +424,8 @@ public class GamePanel_test extends JPanel implements MouseListener, MouseMotion
 
     private void tryFireAtComputer(Location mousePosition) {
         Location targetPosition = computer.getLocationWithinGrid(mousePosition.x, mousePosition.y);
+        // Push AI move onto stack before attack
+        moveStack.push(new Move(targetPosition, false));
         if (!computer.isLocationMarked(targetPosition)) {
             doPlayerTurn(targetPosition);
             if (!computer.areAllShipsDestroyed()) {
@@ -497,7 +541,64 @@ public class GamePanel_test extends JPanel implements MouseListener, MouseMotion
     
         worker.execute();
     }
- 
+
+    public void undo() {
+        if (moveStack.isEmpty()) {
+            return; // Nothing to undo
+        }
+
+        Move lastMove = moveStack.pop();
+
+        // Handle undo based on move type
+        if (lastMove.isPlayerMove) {
+            // Undo player move (remove ship placement from grid)
+            playerGrid.removeShip(lastMove.getLocation());
+            computer.removeShip(lastMove.getLocation());
+            // Reset placingShip and tempPlacingPosition
+            placingShip = null;
+            tempPlacingPosition = new Location(0, 0);
+            gameState = GameState.PLACING_SHIPS;
+            statusPanel.setAnnouncement("Undo: Player ship placement");
+        } else {
+            // Check if the undo AI move resulted in a player ship being sunk
+            // If so, revert the player's last move (attack) as well
+            if (playerGrid.getMarkerAtLocation(lastMove.getLocation()).getAssociatedShip().isDestroyed()) {
+                if (!moveStack.isEmpty()) {
+                    Move previousMove = moveStack.peek();
+                    if (previousMove.isPlayerMove()) {
+                        // Revert player attack (undo previous move from stack)
+                        redoLevel++;
+                        redo(); // Recursive call to undo the player's attack
+                    }
+                }
+            }
+        }
+        redoLevel = 0;
+        statusPanel.setAnnouncement("Undo successfully " );
+        repaint();
+    }
+
+
+    public void redo() {
+        if (redoLevel > 0 && !moveStack.isEmpty()) {
+            Move redoMove = moveStack.peek();
+            if (redoMove.isPlayerMove()) {
+                // Redo player move (place ship back on grid)
+                playerGrid.placeShip(redoMove.getLocation(), placingShip.isSideways());
+                computer.placeShip(redoMove.getLocation(), placingShip.isSideways());
+                gameState = GameState.PLACING_SHIPS; // Might need adjustment based on game flow
+            } else {
+                // Simulate computer's attack (fire at the location)
+                doPlayerTurn(redoMove.getLocation()); // Assuming doPlayerTurn handles the attack logic
+            }
+            moveStack.pop(); // Remove the redone move from the stack
+            redoLevel--;
+            statusPanel.setAnnouncement("Redo successfully ");
+            repaint();
+        }
+    }
+
+
     @Override
     public void mouseClicked(MouseEvent e) {}
     @Override

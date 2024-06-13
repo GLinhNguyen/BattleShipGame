@@ -1,8 +1,6 @@
 //rectangle
 package Functions;
 
-import javax.swing.text.Position;
-
 /* location class: represent a single position x,y on a board.  */
 public class Location {
 

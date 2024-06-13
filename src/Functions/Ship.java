@@ -112,6 +112,7 @@ public class Ship {
         this.gridPosition = gridPosition;
     }
 
+
     /**
      * Gets the current direction of the ship.
      *
@@ -128,6 +129,10 @@ public class Ship {
      */
     public int getSegments() {
         return segments;
+    }
+
+    public Location getGridPosition() {
+        return gridPosition;
     }
 
     /**

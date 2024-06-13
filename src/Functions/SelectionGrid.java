@@ -1,9 +1,7 @@
 package Functions;
 /* Functions.SelectionGrid class:
 define the grid for storing ships
-deifine the grid of markers to indicate hit/ miss detection  */
-
-
+define the grid of markers to indicate hit/ miss detection  */
 
 import Game.GamePanel_test;
 //import Game.GamePanel;
@@ -313,6 +311,33 @@ public class SelectionGrid extends Coordinate implements LayoutManager {
         }
     }
 
+    public void removeShip(Location location) {
+        // Find the ship at the specified location
+        Ship shipToRemove = null;
+        for (Ship ship : ships) { // Assuming ships is a List or similar data structure storing ships
+            if (ship.getGridPosition().equals(location)) {
+                shipToRemove = ship;
+                break;
+            }
+        }
+
+        if (shipToRemove != null) {
+            // Remove the ship from the list of ships
+            ships.remove(shipToRemove);
+
+            // Update grid markers based on ship size and orientation
+            int shipSize = shipToRemove.getSegments();
+            boolean isSideways = shipToRemove.isSideways();
+            for (int i = 0; i < shipSize; i++) {
+                int offsetX = isSideways ? i : 0;
+                int offsetY = isSideways ? 0 : i;
+                Location markerLocation = new Location(location.x + offsetX, location.y + offsetY);
+
+            }
+        }
+    }
+
+
     public int getHeight() {
         return height;
     }
@@ -351,5 +376,9 @@ public class SelectionGrid extends Coordinate implements LayoutManager {
     public void layoutContainer(Container parent) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'layoutContainer'");
+    }
+
+    public void placeShip(Location location, boolean sideways) {
+
     }
 }

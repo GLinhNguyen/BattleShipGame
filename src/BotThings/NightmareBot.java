@@ -151,7 +151,7 @@ public class NightmareBot extends Bot {
      * @return A list of all adjacent positions that are inside the grid space.
      */
     private List<Location> getAdjacentCell(Location location){
-        List<Location> result = new ArrayList();
+        List<Location> result = new ArrayList<>();
         if (location.x != 0) {
             Location left = new Location(location);
             left.add(Location.LEFT);

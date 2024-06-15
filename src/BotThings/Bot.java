@@ -58,9 +58,6 @@ public class Bot {
             }
         }
     }
-    public boolean allShipsSunk() {
-        return playerGrid.areAllShipsDestroyed();
-    }
 
     private void createValidMoveList() {
         possibleMoves = new ArrayList<>();

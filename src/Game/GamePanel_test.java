@@ -28,10 +28,11 @@ public class GamePanel_test extends JPanel implements MouseListener, MouseMotion
 
     public GamePanel_test(int aiChoice) {
         setBackground(new Color(42, 136, 163));
-        setPreferredSize(new Dimension(800, 600)); // Set to your desired dimensions
         currentState = GameState.PLACING_SHIPS;
         computer = new SelectionGrid(0, 0);
         playerGrid = new SelectionGrid(0, computer.getHeight() + 50);
+        setPreferredSize(new Dimension(computer.getWidth(), playerGrid.getLocation().y + playerGrid.getHeight())); // Set to your desired dimensions
+
 
         if (aiChoice == 0) {
             aiController = new EasyBot(playerGrid);
@@ -39,7 +40,7 @@ public class GamePanel_test extends JPanel implements MouseListener, MouseMotion
             aiController = new NightmareBot(playerGrid, aiChoice == 2, aiChoice == 2);
         }
 
-        Location statusPanelLocation = new Location(80, computer.getHeight() + 1);
+        Location statusPanelLocation = new Location(0, computer.getHeight() + 1);
         statusPanel = new StatusPanel(statusPanelLocation, computer.getWidth(), 49);
 
         setLayout(new BorderLayout());

@@ -381,4 +381,6 @@ public class SelectionGrid extends Coordinate implements LayoutManager {
     public void placeShip(Location location, boolean sideways) {
 
     }
+
+
 }

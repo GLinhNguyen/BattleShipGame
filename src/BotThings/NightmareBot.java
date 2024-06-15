@@ -7,6 +7,10 @@ import java.lang.reflect.AccessFlag;
 
 import javax.swing.text.Position;
 
+import Boards.Location;
+import Boards.Marker;
+import Boards.SelectionGrid;
+
 public class NightmareBot extends Bot {
 
     private List<Location> shipHits;
@@ -157,7 +161,7 @@ public class NightmareBot extends Bot {
             left.add(Location.LEFT);
             result.add(left);
         }
-        if (location.x != SelectionGrid.gridWidth - 1) {
+        if (location.x != SelectionGrid.gridXNum - 1) {
             Location right = new Location(location);
             right.add(Location.RIGHT);
             result.add(right);
@@ -167,7 +171,7 @@ public class NightmareBot extends Bot {
             up.add(Location.UP);
             result.add(up);
         }
-        if (location.y != SelectionGrid.gridHeight - 1) {
+        if (location.y != SelectionGrid.gridYNum - 1) {
             Location down = new Location(location);
             down.add(Location.DOWN);
             result.add(down);

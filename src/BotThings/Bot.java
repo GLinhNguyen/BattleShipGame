@@ -6,6 +6,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import Boards.Location;
+import Boards.SelectionGrid;
+
 public class Bot {
 
     protected SelectionGrid playerGrid;
@@ -47,8 +50,8 @@ public class Bot {
             boolean placed = false;
 
             while (!placed) {
-                int gridX = rand.nextInt(SelectionGrid.gridWidth);
-                int gridY = rand.nextInt(SelectionGrid.gridHeight);
+                int gridX = rand.nextInt(SelectionGrid.gridXNum);
+                int gridY = rand.nextInt(SelectionGrid.gridYNum);
                 boolean sideways = rand.nextBoolean();
 
                 if (playerGrid.canPlaceShipAt(gridX, gridY, segments, sideways)) {
@@ -61,8 +64,8 @@ public class Bot {
 
     private void createValidMoveList() {
         possibleMoves = new ArrayList<>();
-        for(int x = 0; x < SelectionGrid.gridWidth; x++) {
-            for(int y = 0; y < SelectionGrid.gridHeight; y++) {
+        for(int x = 0; x < SelectionGrid.gridXNum; x++) {
+            for(int y = 0; y < SelectionGrid.gridYNum; y++) {
                 possibleMoves.add(new Location(x,y));
             }
         }

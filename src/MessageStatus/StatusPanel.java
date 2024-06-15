@@ -137,10 +137,11 @@
 // }
 package MessageStatus;
 
-import Functions.Coordinate;
-import Functions.Location;
-import Game.GameState;
 import java.util.List;
+
+import Boards.Coordinate;
+import Boards.Location;
+
 import java.util.ArrayList;
 import java.awt.*;
 
@@ -154,7 +155,7 @@ public class StatusPanel extends Coordinate {
     private Location gridPosition;
     protected Location location;
     public Coordinate coordinate;
-    private Font font = new Font("Arial", Font.BOLD, 12);
+    private Font font = new Font(" ", Font.BOLD, 12);
 
     private boolean isSideways;
     protected String announcement;

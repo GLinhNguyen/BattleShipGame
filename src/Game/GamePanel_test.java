@@ -4,10 +4,21 @@ import MessageStatus.*;
 import Functions.*;
 import BotThings.*;
 
-import java.awt.event.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
 import javax.swing.*;
+
+import Boards.Location;
+import Boards.SelectionGrid;
+
 import java.awt.*;
-import java.util.*;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class GamePanel_test extends JPanel implements MouseListener, MouseMotionListener {
     private StatusPanel statusPanel;
@@ -19,92 +30,73 @@ public class GamePanel_test extends JPanel implements MouseListener, MouseMotion
     private int placingShipIndex;
     private GameState gameState;
     public static boolean debugModeActive;
+    private SelectionGrid player;
     private GameState currentState;
+    private int timeLimit;
+    private Timer gameTimer;
+    private int countdown;
+    private JButton restartButton;
+    private Image bgImage;
 
-    private Stack<Move> moveStack = new Stack<>();
-
-    private JButton undoButton;
-    private JButton redoButton;
-
-    public GamePanel_test(int aiChoice) {
-        setBackground(new Color(42, 136, 163));
+   
+    public GamePanel_test(int aiChoice, int countdownDuration) {
+        this.timeLimit = countdownDuration;
+        setPreferredSize(new Dimension(1000, 800)); // Set to your desired dimensions
         currentState = GameState.PLACING_SHIPS;
-        computer = new SelectionGrid(0, 0);
-        playerGrid = new SelectionGrid(0, computer.getHeight() + 50);
-        setPreferredSize(new Dimension(computer.getWidth(), playerGrid.getLocation().y + playerGrid.getHeight())); // Set to your desired dimensions
-
-
+        computer = new SelectionGrid(320, 0);
+        playerGrid = new SelectionGrid(320, computer.getHeight() + 50);
+    
         if (aiChoice == 0) {
             aiController = new EasyBot(playerGrid);
         } else {
             aiController = new NightmareBot(playerGrid, aiChoice == 2, aiChoice == 2);
         }
-
-        Location statusPanelLocation = new Location(0, computer.getHeight() + 1);
+    
+        Location statusPanelLocation = new Location(320, computer.getHeight() + 1);
         statusPanel = new StatusPanel(statusPanelLocation, computer.getWidth(), 49);
-
+    
         setLayout(new BorderLayout());
-
+    
         addMouseListener(this);
         addMouseMotionListener(this);
-
-        // Add Undo and Redo buttons
-        undoButton = new JButton("Undo");
-        redoButton = new JButton("Redo");
-
-        undoButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                undo();
-            }
-        });
-
-        redoButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                redo();
-            }
-        });
-
+    
+        // Initialize and add the restart button
+        restartButton = new JButton("Restart");
+        restartButton.addActionListener(e -> restart());
         JPanel buttonPanel = new JPanel();
-        buttonPanel.add(undoButton);
-        buttonPanel.add(redoButton);
-
-        add(buttonPanel, BorderLayout.SOUTH);
+        buttonPanel.add(restartButton);
+        add(buttonPanel, BorderLayout.EAST);
+    
         restart();
-    }
-
-    public class Move {
-        private Location location; // Location of the move (attack or ship placement)
-        private boolean isPlayerMove; // indicate if it's a player or AI move
-
-        public Move(Location location, boolean isPlayerMove) {
-            this.location = location;
-            this.isPlayerMove = isPlayerMove;
-        }
-
-        // Getter for location
-        public Location getLocation() {
-            return location;
-        }
-
-        // Getter for isPlayerMove
-        public boolean isPlayerMove() {
-            return isPlayerMove;
+    
+        // Load the background image
+         try {
+            bgImage = ImageIO.read(getClass().getResourceAsStream("/Graphics/BG-gamPanel.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
-
+    
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
+        
+        // Draw the background image
+        if (bgImage != null) {
+            g.drawImage(bgImage, 0, 0, getWidth(), getHeight(), this);
+        }
+    
+        // Draw other components
         computer.paint(g);
         playerGrid.paint(g);
+        statusPanel.paint(g);
         if (gameState == GameState.PLACING_SHIPS) {
             placingShip.paint(g);
         }
-        statusPanel.paint(g);
+       
+        drawCountdownTimer(g);
     }
-
+    
     public void handleInput(int keyCode) {
         if (keyCode == KeyEvent.VK_ESCAPE) {
             System.exit(1);
@@ -117,6 +109,46 @@ public class GamePanel_test extends JPanel implements MouseListener, MouseMotion
             debugModeActive = !debugModeActive;
         }
         repaint();
+    }
+
+  
+    private void drawCountdownTimer(Graphics g) {
+        g.setColor(Color.WHITE);
+        g.setFont(new Font("Efour Digital Pro", Font.BOLD, 30));
+        String timerText = "Time: " + countdown + "s";
+        g.drawString(timerText, getWidth() - 200, 50);
+    }
+
+    private void startGameTimer() {
+        countdown = timeLimit;
+        if (gameTimer != null) {
+            gameTimer.cancel();
+        }
+        gameTimer = new Timer();
+        gameTimer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                countdown--;
+                if (countdown <= 0) {
+                    gameTimer.cancel();
+                    endGame();
+                }
+                repaint();
+            }
+        }, 1000, 1000);
+    }
+
+    private void endGame() {
+        if (playerGrid.areAllShipsDestroyed()) {
+            gameState = GameState.GAME_LOSS;
+            statusPanel.showGameOver(false); // Computer wins
+        } else if (computer.areAllShipsDestroyed()) {
+            gameState = GameState.GAME_WIN;
+            statusPanel.showGameOver(true); // Player wins
+        } else {
+            gameState = GameState.GAME_LOSS;
+            statusPanel.showGameOver(false); // Time ran out
+        }
     }
 
     public void restart() {
@@ -132,7 +164,7 @@ public class GamePanel_test extends JPanel implements MouseListener, MouseMotion
         debugModeActive = false;
         statusPanel.reset();
         gameState = GameState.PLACING_SHIPS;
-        moveStack.clear(); // Clear move stack on restart
+        startGameTimer();
     }
 
     private void tryPlaceShip(Location mousePosition) {
@@ -140,7 +172,6 @@ public class GamePanel_test extends JPanel implements MouseListener, MouseMotion
         updateShipPlacement(targetPosition);
         if (playerGrid.canPlaceShipAt(targetPosition.x, targetPosition.y, SelectionGrid.boatSize[placingShipIndex], placingShip.isSideways())) {
             placeShip(targetPosition);
-            moveStack.push(new Move(targetPosition, true));
         }
     }
 
@@ -178,6 +209,7 @@ public class GamePanel_test extends JPanel implements MouseListener, MouseMotion
         if (computer.areAllShipsDestroyed()) {
             gameState = GameState.GAME_WIN;
             statusPanel.showGameOver(true);
+            gameTimer.cancel();
         }
     }
 
@@ -193,6 +225,7 @@ public class GamePanel_test extends JPanel implements MouseListener, MouseMotion
         if (playerGrid.areAllShipsDestroyed()) {
             gameState = GameState.GAME_LOSS;
             statusPanel.showGameOver(false);
+            gameTimer.cancel();
         }
     }
 
@@ -205,9 +238,9 @@ public class GamePanel_test extends JPanel implements MouseListener, MouseMotion
 
     private void updateShipPlacement(Location tempPlacingPosition2) {
         if (placingShip.isSideways()) {
-            tempPlacingPosition2.x = Math.min(tempPlacingPosition2.x, SelectionGrid.gridWidth - SelectionGrid.boatSize[placingShipIndex]);
+            tempPlacingPosition2.x = Math.min(tempPlacingPosition2.x, SelectionGrid.gridXNum - SelectionGrid.boatSize[placingShipIndex]);
         } else {
-            tempPlacingPosition2.y = Math.min(tempPlacingPosition2.y, SelectionGrid.gridHeight - SelectionGrid.boatSize[placingShipIndex]);
+            tempPlacingPosition2.y = Math.min(tempPlacingPosition2.y, SelectionGrid.gridYNum - SelectionGrid.boatSize[placingShipIndex]);
         }
         placingShip.setDrawPosition(new Location(tempPlacingPosition2), new Location(playerGrid.getLocation().x + tempPlacingPosition2.x * SelectionGrid.cellSize, playerGrid.getLocation().y + tempPlacingPosition2.y * SelectionGrid.cellSize));
         tempPlacingPosition = tempPlacingPosition2;
@@ -233,58 +266,47 @@ public class GamePanel_test extends JPanel implements MouseListener, MouseMotion
     public void mouseMoved(MouseEvent e) {
         if (gameState != GameState.PLACING_SHIPS) return;
 
-        tryMovePlacingShip(new Location(e.getX(), e.getY()));
-        repaint();
-    }
-
-    public void undo() {
-        if (moveStack.isEmpty()) {
-            return; // Nothing to undo
-        }
-
-        Move lastMove = moveStack.pop();
-
-        // Handle undo based on move type
-        if (lastMove.isPlayerMove()) {
-            // Undo player move (remove ship placement from grid)
-            playerGrid.removeShip(lastMove.getLocation());
-            computer.removeShip(lastMove.getLocation());
-            placingShipIndex--;
-            if (placingShipIndex >= 0) {
-                placingShip = new Ship(new Location(0, 0), new Location(playerGrid.getLocation().x, playerGrid.getLocation().y), SelectionGrid.boatSize[placingShipIndex], true);
-                tempPlacingPosition = new Location(0, 0);
-            } else {
-                placingShip = null;
-            }
-            gameState = GameState.PLACING_SHIPS;
-            statusPanel.setAnnouncement("Undo: Player ship placement");
-        } else {
-            // Handle AI move undo logic...
-        }
-        statusPanel.setAnnouncement("Undo successfully");
-        repaint();
-    }
-
-    public void redo() {
-        if (!moveStack.isEmpty()) {
-            Move redoMove = moveStack.peek(); // Peek the last undone move
-
-            if (redoMove.isPlayerMove()) {
-                // Redo player move (place ship back on grid)
-                playerGrid.placeShip(redoMove.getLocation(), placingShip.isSideways());
-                computer.placeShip(redoMove.getLocation(), placingShip.isSideways());
-            } else {
-                // Simulate computer's attack (fire at the location)
-                doPlayerTurn(redoMove.getLocation()); // Assuming doPlayerTurn handles the attack logic
+        SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
+            @Override
+            protected Void doInBackground() throws Exception {
+                tryMovePlacingShip(new Location(e.getX(), e.getY()));
+                return null;
             }
 
-            moveStack.pop(); // Remove the move from the stack
-            statusPanel.setAnnouncement("Redo successfully");
-            repaint();
-        }
+            @Override
+            protected void done() {
+                repaint();
+            }
+        };
+
+        worker.execute();
     }
 
+    public void updateGameState(GameState newState) {
+        SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
+            @Override
+            protected Void doInBackground() throws Exception {
+                switch (currentState) {
+                    case FIRING:
+                        if (newState == GameState.GAME_WIN) {
+                            statusPanel.getMessage();
+                        } else if (newState == GameState.GAME_LOSS) {
+                            statusPanel.getMessage();
+                        }
+                        break;
+                    case PLACING_SHIPS:
+                        if (newState == GameState.FIRING) {
+                            statusPanel.getMessage();
+                        }
+                        break;
+                    // other cases...
+                }
+                return null;
+            }
+        };
 
+        worker.execute();
+    }
 
     @Override
     public void mouseClicked(MouseEvent e) {}

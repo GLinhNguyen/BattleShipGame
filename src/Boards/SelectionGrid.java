@@ -1,24 +1,25 @@
-package Functions;
+package Boards;
 /* Functions.SelectionGrid class:
 define the grid for storing ships
 define the grid of markers to indicate hit/ miss detection  */
 
 import Game.GamePanel_test;
-//import Game.GamePanel;
+
 
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import Functions.Ship;
 
 public class SelectionGrid extends Coordinate implements LayoutManager {
 
     // size of each grid cell in pixel
-    public static final int cellSize = 30;
+    public static final int cellSize = 35;
 
     // number of grid cell in x-axis (width) and y-axis (height)
-    public static final int gridWidth = 10;
-    public static final int gridHeight = 10;
+    public static final int gridXNum = 10;
+    public static final int gridYNum = 10;
 
     // Definitions of the number of Ships, and the number of segments that make up
     // each of those ships.
@@ -27,7 +28,7 @@ public class SelectionGrid extends Coordinate implements LayoutManager {
 
     // A grid of markers to show the hit/miss on attacks on grid.
 
-    private Marker[][] markers = new Marker[gridWidth][gridHeight];
+    private Marker[][] markers = new Marker[gridXNum][gridYNum];
 
     // list of ship
     private List<Ship> ships;
@@ -47,7 +48,7 @@ public class SelectionGrid extends Coordinate implements LayoutManager {
      * y coordinate to offset the grid by in pixels.
      */
     public SelectionGrid(int x, int y) {
-        super(x, y, cellSize * gridWidth, cellSize * gridHeight);
+        super(x, y, cellSize * gridXNum, cellSize * gridYNum);
         createMarkerGrid();
         ships = new ArrayList<>();
         rand = new Random();
@@ -74,8 +75,12 @@ public class SelectionGrid extends Coordinate implements LayoutManager {
                 ship.paint(g);
             }
         }
-        drawMarkers(g);
+      
+        
         drawGrid(g);
+        drawMarkers(g);
+     
+      
     }
 
     // show all the ships if set is true. showShips is true will make all the ships
@@ -90,8 +95,8 @@ public class SelectionGrid extends Coordinate implements LayoutManager {
      * and a state where no ships have been destroyed.
      */
     public void reset() {
-        for (int x = 0; x < gridWidth; x++) {
-            for (int y = 0; y < gridHeight; y++) {
+        for (int x = 0; x < gridXNum; x++) {
+            for (int y = 0; y < gridYNum; y++) {
                 markers[x][y].reset();
             }
         }
@@ -175,7 +180,7 @@ public class SelectionGrid extends Coordinate implements LayoutManager {
         if (sideways) {
 
             // when ship is place in horizontal
-            if (gridY > gridHeight || gridX + segments > gridWidth) {
+            if (gridY > gridYNum || gridX + segments > gridXNum) {
                 return false;
             }
 
@@ -188,7 +193,7 @@ public class SelectionGrid extends Coordinate implements LayoutManager {
         } else {
 
             // when ship is place in vertical
-            if (gridY + segments > gridHeight || gridX > gridWidth) {
+            if (gridY + segments > gridYNum || gridX > gridXNum) {
                 return false;
             }
 
@@ -207,19 +212,25 @@ public class SelectionGrid extends Coordinate implements LayoutManager {
      * @param g Reference to the Graphics object for rendering.
      */
     private void drawGrid(Graphics g) {
-        g.setColor(Color.BLACK);
+        Graphics2D g2 = (Graphics2D) g;
+       
+      
+        g2.setColor(Color.WHITE);
+        g2.setStroke(new BasicStroke(3)); // Set line thickness to 3
 
+       
         // Draw vertical lines
         int y2 = location.y;
         int y1 = location.y + height;
-        for (int x = 0; x <= gridWidth; x++)
+        for (int x = 0; x <= gridXNum; x++)
             g.drawLine(location.x + x * cellSize, y1, location.x + x * cellSize, y2);
 
         // Draw horizontal lines
         int x2 = location.x;
         int x1 = location.x + width;
-        for (int y = 0; y <= gridHeight; y++)
+        for (int y = 0; y <= gridYNum; y++)
             g.drawLine(x1, location.y + y * cellSize, x2, location.y + y * cellSize);
+        
     }
 
     /**
@@ -229,9 +240,12 @@ public class SelectionGrid extends Coordinate implements LayoutManager {
      * @param g Reference to the Graphics object for rendering.
      */
     private void drawMarkers(Graphics g) {
-        for (int x = 0; x < gridWidth; x++) {
-            for (int y = 0; y < gridHeight; y++) {
+        
+        for (int x = 0; x < gridXNum; x++) {
+            for (int y = 0; y < gridYNum; y++) {
                 markers[x][y].paint(g);
+                
+               
             }
         }
     }
@@ -240,9 +254,9 @@ public class SelectionGrid extends Coordinate implements LayoutManager {
     // initialise them.
 
     private void createMarkerGrid() {
-        for (int x = 0; x < gridWidth; x++) {
+        for (int x = 0; x < gridXNum; x++) {
 
-            for (int y = 0; y < gridHeight; y++) {
+            for (int y = 0; y < gridYNum; y++) {
 
                 markers[x][y] = new Marker(location.x + x * cellSize, location.y + y * cellSize, cellSize,
                         cellSize);
@@ -261,8 +275,8 @@ public class SelectionGrid extends Coordinate implements LayoutManager {
             boolean sideways = rand.nextBoolean();
             int gridX, gridY;
             do {
-                gridX = rand.nextInt(sideways ? gridWidth - boatSize[i] : gridWidth);
-                gridY = rand.nextInt(sideways ? gridHeight : gridHeight - boatSize[i]);
+                gridX = rand.nextInt(sideways ? gridXNum - boatSize[i] : gridXNum);
+                gridY = rand.nextInt(sideways ? gridYNum : gridYNum - boatSize[i]);
             } while (!canPlaceShipAt(gridX, gridY, boatSize[i], sideways));
             placeShip(gridX, gridY, boatSize[i], sideways);
         }

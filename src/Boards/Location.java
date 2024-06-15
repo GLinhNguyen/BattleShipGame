@@ -1,5 +1,5 @@
 //rectangle
-package Functions;
+package Boards;
 
 /* location class: represent a single position x,y on a board.  */
 public class Location {

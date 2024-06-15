@@ -1,4 +1,4 @@
-package Game;
+package MessageStatus;
 
 public enum GameState {
     PLACING_SHIPS,

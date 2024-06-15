@@ -1,46 +1,28 @@
-import Game.GamePanel_test;
-
-import java.io.File;
+package Game;
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
 import java.io.IOException;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyAdapter;
-
+import java.util.Random;
 import javax.imageio.ImageIO;
-import javax.swing.ButtonGroup;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JRadioButton;
-import java.awt.CardLayout;
-import java.awt.Color;
-import java.awt.EventQueue;
-import java.awt.Graphics;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Image;
-import java.awt.Insets;
-
-import static javax.imageio.ImageIO.read;
 
 public class StartingWindow implements KeyListener {
 
     private JRadioButton timePerTurnOption1;
     private JRadioButton timePerTurnOption2;
     private JRadioButton timePerTurnOption3;
+    private JRadioButton difficultyEasy;
+    private JRadioButton difficultyNightmare;
 
     private JFrame startFrame;
     private JButton playButton;
     private JButton settingsButton;
     private Image bgImage;
-
+    private CardLayout cardLayout;
+    private JPanel mainPanel;
+    private int difficultyChoice = 0; // Default to Easy
+    private boolean playerFirstTurn = true; // Default to Player
+    private int timePerTurn = 40000; // Default to 40 seconds
     public static GamePanel_test gamePanel;
 
     public static void main(String[] args) {
@@ -57,117 +39,98 @@ public class StartingWindow implements KeyListener {
     public StartingWindow() {
         initialize();
     }
-    // Initialize window
+
     private void initialize() {
-        startFrame = new JFrame();
-        startFrame.setBounds(100, 100, 400, 600);
+        startFrame = new JFrame("Battleship Game");
+        startFrame.setBounds(100, 100, 1000, 800);
         startFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        startFrame.setSize(400, 600);
+        startFrame.setSize(1000, 800);
         startFrame.setResizable(false);
         startFrame.setLocationRelativeTo(null);
+        startFrame.setFocusable(true);
+        startFrame.addKeyListener(this);
 
-        // Create a panel with an image background
-        class ImagePanel extends JPanel {
-
-            private ImageIcon backgroundImage;
-
-            public ImagePanel() {
-                backgroundImage = new ImageIcon(getClass().getResource("/Graphics/Background.png"));
-            }
-
-            @Override
-            protected void paintComponent(Graphics g) {
-                super.paintComponent(g);
-                g.drawImage(backgroundImage.getImage(), 0, 0, this);
-            }
+        try {
+            bgImage = ImageIO.read(getClass().getResourceAsStream("/Graphics/Background2-no button.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
-        JPanel mainPanel = new JPanel();
-        CardLayout cardLayout = new CardLayout();
+        mainPanel = new JPanel();
+        cardLayout = new CardLayout();
         mainPanel.setLayout(cardLayout);
         startFrame.add(mainPanel);
 
-        ImagePanel startPanel = new ImagePanel();
+        JPanel startPanel = createStartPanel();
+        JPanel settingPanel = createSettingPanel();
+        mainPanel.add(startPanel, "Start");
+        mainPanel.add(settingPanel, "Settings");
+
+        startFrame.setVisible(true);
+    }
+
+    private JPanel createStartPanel() {
+        JPanel startPanel = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                g.drawImage(bgImage, 0, 0, this);
+            }
+        };
         startPanel.setLayout(null);
 
         // Add play button
-        final ImageIcon buttonIcon = new ImageIcon(getClass().getResource("/Graphics/Play.png"));
-
+        ImageIcon buttonIcon = new ImageIcon(getClass().getResource("/Graphics/Play.png"));
         playButton = new JButton(buttonIcon);
         playButton.setFocusPainted(false);
         playButton.setRolloverEnabled(false);
-
         playButton.setMargin(new Insets(0, 0, 0, 0));
         playButton.setBorder(null);
-        playButton.setBounds(0,200, 400, 400);
-        playButton.setPreferredSize(playButton.getSize());
-        System.out.println(playButton.getSize());
+        playButton.setBounds(320, 600, 300, 50);
         startPanel.add(playButton);
 
-
         // Add hover effect
-        final ImageIcon hoverIcon = new ImageIcon(getClass().getResource("/Graphics/hoverPlay.png"));
-
+        ImageIcon hoverIcon = new ImageIcon(getClass().getResource("/Graphics/hoverPlay.png"));
         playButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
                 playButton.setIcon(hoverIcon);
-                playButton.setMargin(new Insets(0, 0, 0, 0));
-                playButton.setBorder(null);
-
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
                 playButton.setIcon(buttonIcon);
-                playButton.setMargin(new Insets(0, 0, 0, 0));
-                playButton.setBorder(null);
             }
         });
 
-
+        // Add settings button
         ImageIcon settingIcon = new ImageIcon(getClass().getResource("/Graphics/settings.png"));
-
         settingsButton = new JButton(settingIcon);
         settingsButton.setFocusPainted(false);
         settingsButton.setRolloverEnabled(false);
-        settingsButton.setBounds(100, 100, 200, 200);
+        settingsButton.setBounds(320, 680, 300, 50);
         startPanel.add(settingsButton);
 
-        final ImageIcon hoverSettingIcon = new ImageIcon(getClass().getResource("/Graphics/hoverSettings.png"));
+        ImageIcon hoverSettingIcon = new ImageIcon(getClass().getResource("/Graphics/hoverSettings.png"));
         settingsButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
                 settingsButton.setIcon(hoverSettingIcon);
-                settingsButton.setMargin(new Insets(0, 0, 0, 0));
-                settingsButton.setBorder(null);
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
                 settingsButton.setIcon(settingIcon);
-                settingsButton.setMargin(new Insets(0, 0, 0, 0));
-                settingsButton.setBorder(null);
-
             }
         });
 
         settingsButton.setMargin(new Insets(0, 0, 0, 0));
         settingsButton.setBorder(null);
-        mainPanel.add(startPanel, "Start");
 
-        playButton.addActionListener((ActionEvent e) -> {
-            cardLayout.show(gamePanel, "Game");
-        });
+        playButton.addActionListener(e -> startGame());
+        settingsButton.addActionListener(e -> cardLayout.show(mainPanel, "Settings"));
 
-        settingsButton.addActionListener((ActionEvent e) -> {
-            cardLayout.show(mainPanel, "Settings");
-        });
-
-        JPanel settingPanel = createSettingPanel();
-        mainPanel.add(settingPanel, "Settings");
-
-        startFrame.setVisible(true);
+        return startPanel;
     }
 
     private JPanel createSettingPanel() {
@@ -176,12 +139,13 @@ public class StartingWindow implements KeyListener {
         settingPanel.setLayout(new GridBagLayout());
         GridBagConstraints constraints = new GridBagConstraints();
 
-        JLabel timePerTurnLabel = new JLabel("Choose time per turn: ");
+        JLabel timePerTurnLabel = new JLabel("Choose time limit: ");
         constraints.gridx = 0;
         constraints.gridy = 0;
         constraints.gridwidth = 2;
         settingPanel.add(timePerTurnLabel, constraints);
-        timePerTurnOption1 = new JRadioButton("40 seconds");
+
+        timePerTurnOption1 = new JRadioButton("60 seconds");
         timePerTurnOption1.setSelected(true);
         ButtonGroup timePerTurnGroup = new ButtonGroup();
         timePerTurnGroup.add(timePerTurnOption1);
@@ -189,70 +153,90 @@ public class StartingWindow implements KeyListener {
         constraints.gridy = 1;
         settingPanel.add(timePerTurnOption1, constraints);
 
-        timePerTurnOption2 = new JRadioButton("60 seconds");
+        timePerTurnOption2 = new JRadioButton("90 seconds");
         timePerTurnGroup.add(timePerTurnOption2);
         constraints.gridx = 2;
         constraints.gridy = 1;
         settingPanel.add(timePerTurnOption2, constraints);
 
-        timePerTurnOption3 = new JRadioButton("90 seconds");
+        timePerTurnOption3 = new JRadioButton("120 seconds");
         timePerTurnGroup.add(timePerTurnOption3);
         constraints.gridx = 4;
         constraints.gridy = 1;
         settingPanel.add(timePerTurnOption3, constraints);
 
-        JLabel choosePlayerLabel = new JLabel("Choose who plays first: ");
+        JLabel difficultyLabel = new JLabel("Choose AI difficulty: ");
         constraints.gridx = 0;
         constraints.gridy = 2;
         constraints.gridwidth = 2;
-        settingPanel.add(choosePlayerLabel, constraints);
-        String[] choices = { "Player", "Computer", "Random" };
-        JComboBox<String> whoPlaysFirstDropdown = new JComboBox<>(choices);
-        whoPlaysFirstDropdown.setSelectedIndex(0);
+        settingPanel.add(difficultyLabel, constraints);
+
+        difficultyEasy = new JRadioButton("Easy");
+        difficultyEasy.setSelected(true);
+        ButtonGroup difficultyGroup = new ButtonGroup();
+        difficultyGroup.add(difficultyEasy);
+        constraints.gridx = 0;
+        constraints.gridy = 3;
+        settingPanel.add(difficultyEasy, constraints);
+
+        difficultyNightmare = new JRadioButton("Nightmare");
+        difficultyGroup.add(difficultyNightmare);
         constraints.gridx = 2;
-        constraints.gridy = 2;
-        constraints.gridwidth = 3;
-        settingPanel.add(whoPlaysFirstDropdown, constraints);
+        constraints.gridy = 3;
+        settingPanel.add(difficultyNightmare, constraints);
+
 
         JButton startGameButton = new JButton("Play Game");
+        startGameButton.addActionListener(e -> {
+            if (difficultyEasy.isSelected()) {
+                difficultyChoice = 0; // Easy
+            } else if (difficultyNightmare.isSelected()) {
+                difficultyChoice = 1; // Nightmare
+            }
 
-        // Add start game button
-        startGameButton = new JButton("Play Game");
+            timePerTurn = getTimePerTurnValue();
+            startGame();
+        });
+
         constraints.gridx = 1;
-        constraints.gridy = 3;
-        constraints.gridwidth = 5; // Span across 3 columns
+        constraints.gridy = 5;
+        constraints.gridwidth = 5;
         constraints.insets = new Insets(50, 10, 0, 10);
         settingPanel.add(startGameButton, constraints);
 
         return settingPanel;
     }
+
+    private void startGame() {
+        gamePanel = new GamePanel_test(0, 60);
+        startFrame.getContentPane().removeAll();
+        startFrame.getContentPane().add(gamePanel);
+        startFrame.revalidate();
+        startFrame.repaint();
+    }
+
     public int getTimePerTurnValue() {
         if (timePerTurnOption1.isSelected()) {
-            return 40000;
+            return 40;
         } else if (timePerTurnOption2.isSelected()) {
-            return 60000;
+            return 60;
         } else if (timePerTurnOption3.isSelected()) {
-            return 90000;
+            return 90;
         } else {
             throw new IllegalStateException("Invalid time per turn selection.");
         }
     }
 
-
-    // KeyListener methods
     @Override
     public void keyPressed(KeyEvent e) {
+        gamePanel.handleInput(e.getKeyCode());
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
-        // TODO Auto-generated method stub
     }
+
     @Override
     public void keyTyped(KeyEvent e) {
-        // TODO Auto-generated method stub
     }
-
-    // MouseListener methods
-
 }

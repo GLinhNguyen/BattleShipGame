@@ -3,6 +3,9 @@ package Functions;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+
+import Boards.Location;
+import Boards.SelectionGrid;
 public class Ship {
     /**
      * Used for placement colour changing.
@@ -63,7 +66,7 @@ public class Ship {
      */
     public void paint(Graphics g) {
         if(shipPlacementColour == ShipPlacementColour.Placed) {
-            g.setColor(destroyedSections >= segments ? Color.RED : Color.DARK_GRAY);
+            g.setColor(destroyedSections >= segments ? Color.RED : Color.PINK);
         } else {
             g.setColor(shipPlacementColour == ShipPlacementColour.Valid ? Color.GREEN : Color.RED);
         }

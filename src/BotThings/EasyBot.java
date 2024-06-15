@@ -3,6 +3,9 @@ import Functions.*;
 
 import java.util.Collections;
 
+import Boards.Location;
+import Boards.SelectionGrid;
+
 public class EasyBot extends Bot {
     public EasyBot(SelectionGrid playerGrid) {
         super(playerGrid);

@@ -1,5 +1,5 @@
 //Rectangle
-package Functions;/*coordinate class: defines a simple rectangle which location on the top left corner,
+package Boards;/*coordinate class: defines a simple rectangle which location on the top left corner,
  * width(xCoor) and height (yCoor) to represent the size of the rectangle. */
 
 public class Coordinate {

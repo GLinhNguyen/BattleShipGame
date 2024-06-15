@@ -1,6 +1,5 @@
 package MessageStatus;
-import Functions.Location;
-import Game.GameState;
+import Boards.Location;
 
 public class Message extends StatusPanel {
     private String topString;

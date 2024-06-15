@@ -1,6 +1,8 @@
-package Functions;
+package Boards;
 
 import java.awt.*;
+
+import Functions.Ship;
 public class Marker extends Coordinate {
     // color ship located
     private final Color HIT_COLOUR = new Color(242, 163, 15);

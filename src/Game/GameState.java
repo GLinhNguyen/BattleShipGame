@@ -2,7 +2,7 @@ package Game;
 
 public enum GameState {
     PLACING_SHIPS,
-    PLAYING,
+    FIRING,
     GAME_WIN,
     GAME_LOSS;
 };

@@ -175,7 +175,7 @@ public class StatusPanel extends Coordinate {
     public String getMessage() {
         messages = new ArrayList<>();
         messages.add(new Message("Place your ships", "Tab Space to rotate your ships", GameState.PLACING_SHIPS));
-        messages.add(new Message("Your turn", "Click on the grid to fire", GameState.PLAYING));
+        messages.add(new Message("Your turn", "Click on the grid to fire", GameState.FIRING));
         messages.add(new Message("You win!", "You sunk all the enemy ships", GameState.GAME_WIN));
         messages.add(new Message("You lose", "All your ships have been sunk", GameState.GAME_LOSS));
         return messages.get(0).getMessage();

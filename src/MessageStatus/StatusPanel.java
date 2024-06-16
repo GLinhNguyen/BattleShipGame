@@ -126,4 +126,7 @@ public class StatusPanel extends Coordinate {
             bottomString = "You lose!";
         }
     }
+    public void showShipSunk(String shipName) {
+        set("Ship " + shipName + " has been sunk!");
+    }
 }

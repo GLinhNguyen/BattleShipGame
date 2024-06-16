@@ -350,6 +350,15 @@ public class SelectionGrid extends Coordinate implements LayoutManager {
             }
         }
     }
+    //Method to test ship
+    public void paintShips(Graphics g) {
+        for (Ship ship : ships) { // Assume ships is a List of Ship objects
+            for (Location location : ship.getOccupiedCoordinates()) {
+                g.setColor(Color.YELLOW);
+                g.fillRect(location.x * cellSize, location.y * cellSize, cellSize, cellSize);
+            }
+        }
+    }
 
 
     public int getHeight() {

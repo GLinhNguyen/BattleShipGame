@@ -15,7 +15,7 @@ public class NightmareBot extends Bot {
 
     private List<Location> shipHits;
     
-    private final boolean randomAi = false;
+    private final boolean randomAi = true;
     private final boolean preferMovesFormingLine;
     private boolean maximizedAdjancentHits;
     
@@ -72,7 +72,7 @@ public class NightmareBot extends Bot {
     public Location getSmartMove() {
        List<Location> possibleMoves = getAdjacentSmartMoves();
        Collections.shuffle(possibleMoves);
-         return possibleMoves.get(0);
+         return possibleMoves.getFirst();
     }
 
     private Location getSmarterMove() {
@@ -92,11 +92,11 @@ public class NightmareBot extends Bot {
             }
         }
         Collections.shuffle(possibleMoves);
-        return possibleMoves.get(0);
+        return possibleMoves.getFirst();
     }
 
     public Location findEmptyPosition(){
-        Location location = possibleMoves.get(0);
+        Location location = possibleMoves.getFirst();
         int highestNotAttacked = -1;
 
         for (int i=0; i < possibleMoves.size(); i++){

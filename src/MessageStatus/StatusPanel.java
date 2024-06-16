@@ -181,20 +181,6 @@ public class StatusPanel extends Coordinate {
         messages.add(new Message("You lose", "All your ships have been sunk", GameState.GAME_LOSS));
         return messages.get(0).getMessage();
     }
-
-//    public String getMessage(String currentState) {
-//        if (currentState == GameState.PLACING_SHIPS) {
-//            return messages.get(0).getMessage();
-//        } else if (currentState == GameState.PLAYING) {
-//            return messages.get(1).getMessage();
-//        } else if (currentState == GameState.GAME_WIN) {
-//            return messages.get(2).getMessage();
-//        } else if (currentState == GameState.GAME_LOSS) {
-//            return messages.get(3).getMessage();
-//        }
-//        return "";
-//    }
-
     public void destroySection() {
         destroyedSections++;
     }
@@ -255,7 +241,7 @@ public class StatusPanel extends Coordinate {
             // Handle gracefully if string width is negative
            throw new NullPointerException("String width cannot be negative");
         }
-        g.drawString(announcement, location.x + width - strWidth / 3, location.y + 20);
+        g.drawString(announcement, width/2, location.y + 20);
 
     }
 
@@ -268,5 +254,8 @@ public class StatusPanel extends Coordinate {
     public void showGameOver(boolean b) {
         announcement = (b) ? messages.get(2).getMessage() : messages.get(3).getMessage() ;
         announcement = gameOverBottomLine;
+    }
+    public void showShipSunk(String shipName) {
+        setAnnouncement("Ship " + shipName + " has been sunk!");
     }
 }

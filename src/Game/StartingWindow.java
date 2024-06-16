@@ -22,7 +22,7 @@ public class StartingWindow implements KeyListener {
     private JPanel mainPanel;
     private int difficultyChoice = 0; // Default to Easy
     private boolean playerFirstTurn = true; // Default to Player
-    private int timePerTurn = 40000; // Default to 40 seconds
+    private int timePerTurn = 10000; // Default to 40 seconds
     public static GamePanel_test gamePanel;
 
     public static void main(String[] args) {
@@ -145,7 +145,7 @@ public class StartingWindow implements KeyListener {
         constraints.gridwidth = 2;
         settingPanel.add(timePerTurnLabel, constraints);
 
-        timePerTurnOption1 = new JRadioButton("60 seconds");
+        timePerTurnOption1 = new JRadioButton("10 seconds");
         timePerTurnOption1.setSelected(true);
         ButtonGroup timePerTurnGroup = new ButtonGroup();
         timePerTurnGroup.add(timePerTurnOption1);
@@ -153,13 +153,13 @@ public class StartingWindow implements KeyListener {
         constraints.gridy = 1;
         settingPanel.add(timePerTurnOption1, constraints);
 
-        timePerTurnOption2 = new JRadioButton("90 seconds");
+        timePerTurnOption2 = new JRadioButton("15 seconds");
         timePerTurnGroup.add(timePerTurnOption2);
         constraints.gridx = 2;
         constraints.gridy = 1;
         settingPanel.add(timePerTurnOption2, constraints);
 
-        timePerTurnOption3 = new JRadioButton("120 seconds");
+        timePerTurnOption3 = new JRadioButton("20 seconds");
         timePerTurnGroup.add(timePerTurnOption3);
         constraints.gridx = 4;
         constraints.gridy = 1;
@@ -208,20 +208,29 @@ public class StartingWindow implements KeyListener {
     }
 
     private void startGame() {
-        gamePanel = new GamePanel_test(0, 60);
+        if(playButton.isSelected()){
+        gamePanel = new GamePanel_test(0, 10000);
         startFrame.getContentPane().removeAll();
         startFrame.getContentPane().add(gamePanel);
         startFrame.revalidate();
         startFrame.repaint();
+        }
+        else{
+            gamePanel = new GamePanel_test(difficultyChoice, timePerTurn);
+            startFrame.getContentPane().removeAll();
+            startFrame.getContentPane().add(gamePanel);
+            startFrame.revalidate();
+            startFrame.repaint();
+        }
     }
 
     public int getTimePerTurnValue() {
         if (timePerTurnOption1.isSelected()) {
-            return 40;
+            return 10;
         } else if (timePerTurnOption2.isSelected()) {
-            return 60;
+            return 15;
         } else if (timePerTurnOption3.isSelected()) {
-            return 90;
+            return 20;
         } else {
             throw new IllegalStateException("Invalid time per turn selection.");
         }

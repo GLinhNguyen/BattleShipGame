@@ -1,15 +1,19 @@
 package Game;
 
+import Boards.Location;
+import Boards.SelectionGrid;
 import MessageStatus.*;
 import Functions.*;
 import BotThings.*;
 
 import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.*;
 import javax.swing.*;
 import javax.swing.Timer;
 
-public class BotPanel extends JPanel {
+public class BotPanel extends JPanel implements KeyListener {
     private StatusPanel statusPanel;
     private SelectionGrid computer1;
     private SelectionGrid computer2;
@@ -32,6 +36,31 @@ public class BotPanel extends JPanel {
         Location statusPanelLocation = new Location(0, computer1.getHeight() + 1);
         statusPanel = new StatusPanel(statusPanelLocation, computer1.getWidth(), 49);
 
+        setFocusable(true);
+        setFocusTraversalKeysEnabled(false);
+        addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_R) {
+                    gameState = GameState.PLACING_SHIPS;
+                    computer1.reset();
+                    computer2.reset();
+                    bot1.reset();
+                    bot2.reset();
+                    statusPanel.showGameOver(false);
+                    repaint();
+                }
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+            }
+        });
+
         setLayout(new BorderLayout());
 
         // Add button to start the bot vs bot game
@@ -52,6 +81,7 @@ public class BotPanel extends JPanel {
     }
 
     public void startBotVsBotGame() {
+        if (gameState != GameState.PLACING_SHIPS) return;
         bot1.placeShips();
         bot2.placeShips();
         gameState = GameState.FIRING;
@@ -82,6 +112,7 @@ public class BotPanel extends JPanel {
             if (computer1.areAllShipsDestroyed()) {
                 gameState = GameState.GAME_WIN;
                 statusPanel.showGameOver(true);
+                return;
             }
         }
 
@@ -100,5 +131,20 @@ public class BotPanel extends JPanel {
     }
 
     public void handleInput(int keyCode) {
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+
     }
 }

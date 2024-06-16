@@ -269,5 +269,13 @@ public class NightmareBot extends Bot {
 
         return atLeastTwoHitsInDirection(testLocation, direction, steps + 1); //Recursive call
     }
+
+    @Override
+public void applyMove(Location move) {
+        Marker marker = playerGrid.getMarkerAtLocation(move);
+        if (marker.isShip()) {
+            marker.getAssociatedShip().destroySection();
+        }
+    }
 }
 

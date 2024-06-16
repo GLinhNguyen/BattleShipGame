@@ -23,4 +23,10 @@ public class EasyBot extends Bot {
         possibleMoves.remove(0);
         return nextMove;
     }
+
+    @Override
+    public void takeTurn() {
+        Location move = selectMove();
+        opponent.applyMove(move);
+    }
 }

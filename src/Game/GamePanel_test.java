@@ -76,6 +76,8 @@ public class GamePanel_test extends JPanel implements MouseListener, MouseMotion
             e.printStackTrace();
         }
     }
+
+    
     
     @Override
     public void paintComponent(Graphics g) {
@@ -184,7 +186,7 @@ public class GamePanel_test extends JPanel implements MouseListener, MouseMotion
             updateShipPlacement(tempPlacingPosition);
         } else {
             gameState = GameState.FIRING;
-            statusPanel.setAnnouncement("Attack the Computer!");
+            statusPanel.setBottomString("Attack the Computer!");
         }
     }
 
@@ -205,7 +207,7 @@ public class GamePanel_test extends JPanel implements MouseListener, MouseMotion
         if (hit && computer.getMarkerAtLocation(targetPosition).getAssociatedShip().isDestroyed()) {
             destroyed = "(Destroyed)";
         }
-        statusPanel.setAnnouncement("Player " + hitMiss + " " + targetPosition + destroyed);
+        statusPanel.setBottomString("Player " + hitMiss + " " + targetPosition + destroyed);
         if (computer.areAllShipsDestroyed()) {
             gameState = GameState.GAME_WIN;
             statusPanel.showGameOver(true);
@@ -221,12 +223,12 @@ public class GamePanel_test extends JPanel implements MouseListener, MouseMotion
         if (hit && playerGrid.getMarkerAtLocation(aiMove).getAssociatedShip().isDestroyed()) {
             destroyed = "(Destroyed)";
         }
-        statusPanel.setAnnouncement("Computer " + hitMiss + " " + aiMove + destroyed);
+        statusPanel.setBottomString("Computer " + hitMiss + " " + aiMove + destroyed);
         if (playerGrid.areAllShipsDestroyed()) {
             gameState = GameState.GAME_LOSS;
             statusPanel.showGameOver(false);
             gameTimer.cancel();
-        }
+        }  
     }
 
     private void tryMovePlacingShip(Location mousePosition) {

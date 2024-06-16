@@ -4,14 +4,22 @@ import Boards.Location;
 import Boards.SelectionGrid;
 import MessageStatus.*;
 import Functions.*;
+import MessageStatus.GameState;
+import MessageStatus.StatusPanel;
+
 import BotThings.*;
+import Functions.Ship;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.*;
+import java.util.Timer;
+import java.util.TimerTask;
 import javax.swing.*;
-import javax.swing.Timer;
+
+import Boards.Location;
+import Boards.SelectionGrid;
 
 public class BotPanel extends JPanel implements KeyListener {
     private StatusPanel statusPanel;
@@ -21,19 +29,27 @@ public class BotPanel extends JPanel implements KeyListener {
     private Bot bot2;
     private GameState gameState;
     public static boolean debugModeActive;
+    private int timeLimit;
+    private javax.swing.Timer turnTimer;
+    private int countdown;
+    private TimerTask countdownTask;
 
-    public BotPanel(int bot1Choice, int bot2Choice) {
+    public BotPanel(int bot1Choice, int bot2Choice, int timeLimit) {
+        this.timeLimit = timeLimit;
+        this.countdown = timeLimit;
+        setPreferredSize(new Dimension(1000, 800));
         setBackground(new Color(42, 136, 163));
+        
         gameState = GameState.PLACING_SHIPS;
-        computer1 = new SelectionGrid(0, 0);
-        computer2 = new SelectionGrid(0, computer1.getHeight() + 50);
-        setPreferredSize(new Dimension(computer1.getWidth(), computer2.getLocation().y + computer2.getHeight())); // Set to your desired dimensions
+        computer1 = new SelectionGrid(350, 0);
+        computer2 = new SelectionGrid(350, computer1.getHeight() + 50);
+       
 
         // Initialize bots based on choices
         bot1 = createBot(bot1Choice, computer1);
         bot2 = createBot(bot2Choice, computer2);
 
-        Location statusPanelLocation = new Location(0, computer1.getHeight() + 1);
+        Location statusPanelLocation = new Location(350, computer1.getHeight() + 1);
         statusPanel = new StatusPanel(statusPanelLocation, computer1.getWidth(), 49);
 
         setFocusable(true);
@@ -63,13 +79,8 @@ public class BotPanel extends JPanel implements KeyListener {
 
         setLayout(new BorderLayout());
 
-        // Add button to start the bot vs bot game
-        JButton startButton = new JButton("Start Bot vs Bot");
-        startButton.addActionListener(e -> startBotVsBotGame());
-
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.add(startButton);
-        add(buttonPanel, BorderLayout.SOUTH);
+        // Start the timer
+        startCountdownTimer();
     }
 
     private Bot createBot(int choice, SelectionGrid grid) {
@@ -85,8 +96,8 @@ public class BotPanel extends JPanel implements KeyListener {
         bot1.placeShips();
         bot2.placeShips();
         gameState = GameState.FIRING;
-        Timer timer = new Timer(1000, e -> playTurn());
-        timer.start();
+        turnTimer = new javax.swing.Timer(1000, e -> playTurn());
+        turnTimer.start();
     }
 
     private void playTurn() {
@@ -96,41 +107,88 @@ public class BotPanel extends JPanel implements KeyListener {
             Location bot1Move = bot1.selectMove();
             boolean bot1Hit = computer2.markLocation(bot1Move);
             String bot1HitMiss = bot1Hit ? "Hit" : "Missed";
-            statusPanel.setAnnouncement("Bot 1 " + bot1HitMiss + " " + bot1Move);
+            statusPanel.setBottomString("Bot 1 " + bot1HitMiss + " " + bot1Move);
 
             if (computer2.areAllShipsDestroyed()) {
                 gameState = GameState.GAME_WIN;
                 statusPanel.showGameOver(true);
+                turnTimer.stop();
                 return;
             }
 
             Location bot2Move = bot2.selectMove();
             boolean bot2Hit = computer1.markLocation(bot2Move);
             String bot2HitMiss = bot2Hit ? "Hit" : "Missed";
-            statusPanel.setAnnouncement("Bot 2 " + bot2HitMiss + " " + bot2Move);
+            statusPanel.setBottomString("Bot 1 " + bot1HitMiss + " " + bot2Move + "\nBot 2 " + bot2HitMiss + " " + bot2Move);
 
             if (computer1.areAllShipsDestroyed()) {
                 gameState = GameState.GAME_WIN;
                 statusPanel.showGameOver(true);
-                return;
+                turnTimer.stop();
             }
         }
 
         repaint();
     }
 
+    private void startCountdownTimer() {
+        countdownTask = new TimerTask() {
+            @Override
+            public void run() {
+                if (countdown > 0) {
+                    countdown--;
+                    repaint();
+                } else {
+                    this.cancel();
+                    handleTimeOut();
+                }
+            }
+        };
+
+        Timer countdownTimer = new Timer();
+        countdownTimer.scheduleAtFixedRate(countdownTask, 1000, 1000); // Start after 1 second, repeat every 1 second
+    }
+
+    private void handleTimeOut() {
+        gameState = GameState.GAME_WIN; // Or a different state to indicate timeout
+        statusPanel.setBottomString("Time's up! Game Over.");
+        statusPanel.showGameOver(false);
+        if (turnTimer != null) {
+            turnTimer.stop();
+        }
+        repaint();
+    }
+
     @Override
-    public void paintComponent(Graphics g) {
+    protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         computer1.paint(g);
         computer2.paint(g);
         statusPanel.paint(g);
+
+        // Draw the countdown timer
+        g.setColor(Color.WHITE);
+        g.setFont(new Font("Arial", Font.BOLD, 20));
+        g.drawString("Time Left: " + countdown + " s", getWidth() - 250, 50);
+    }
+   public void restart() {
+        computer2.reset();
+        computer1.reset();
+        bot1.reset();
+        bot2.reset();
+        bot1.placeShips();
+        bot2.placeShips();
+        gameState = GameState.FIRING;
+        statusPanel.reset();
+        startCountdownTimer();
+    
     }
     public static boolean debugModeActive() {
         return debugModeActive;
     }
 
     public void handleInput(int keyCode) {
+
     }
 
     @Override

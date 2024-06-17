@@ -91,7 +91,7 @@ public class BotPanel extends JPanel implements KeyListener {
         }
     }
 
-    public void startBotVsBotGame() {
+    public void  startBotVsBotGame() {
         if (gameState != GameState.PLACING_SHIPS) return;
         bot1.placeShips();
         bot2.placeShips();
@@ -166,5 +166,4 @@ public class BotPanel extends JPanel implements KeyListener {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'keyReleased'");
     }
-
 }

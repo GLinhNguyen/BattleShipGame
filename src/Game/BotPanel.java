@@ -42,16 +42,15 @@ public class BotPanel extends JPanel implements KeyListener {
         setBackground(new Color(42, 136, 163));
         
         gameState = GameState.PLACING_SHIPS;
-        computer1 = new SelectionGrid(0, 0);
-        computer2 = new SelectionGrid(0, computer1.getHeight() + 50);
-        setPreferredSize(new Dimension(1000, computer2.getLocation().y + computer2.getHeight())); // Set to your desired dimensions
+        computer1 = new SelectionGrid(350, 0);
+        computer2 = new SelectionGrid(350, computer1.getHeight() + 50);
+       
 
         // Initialize bots based on choices
         bot1 = createBot(bot1Choice, computer1);
         bot2 = createBot(bot2Choice, computer2);
 
-
-        Location statusPanelLocation = new Location(0, computer1.getHeight() + 1);
+        Location statusPanelLocation = new Location(350, computer1.getHeight() + 1);
         statusPanel = new StatusPanel(statusPanelLocation, computer1.getWidth(), 49);
 
         setFocusable(true);
@@ -70,7 +69,6 @@ public class BotPanel extends JPanel implements KeyListener {
                     bot1.reset();
                     bot2.reset();
                     statusPanel.showGameOver(false);
-                    statusPanel.setAnnouncement("");
                     repaint();
                 }
             }
@@ -99,36 +97,39 @@ public class BotPanel extends JPanel implements KeyListener {
         bot1.placeShips();
         bot2.placeShips();
         gameState = GameState.FIRING;
-        Timer timer = new Timer(200, e -> playTurn());
-        timer.start();
+        turnTimer = new javax.swing.Timer(1000, e -> playTurn());
+        turnTimer.start();
     }
 
     private void playTurn() {
         if (gameState != GameState.FIRING) return;
+
         if (!computer1.areAllShipsDestroyed() && !computer2.areAllShipsDestroyed()) {
             if (bot1Turn ) {
                 Location bot1Move = bot1.selectMove();
                 boolean bot1Hit = computer2.markLocation(bot1Move);
                 String bot1HitMiss = bot1Hit ? "Hit" : "Missed";
-                statusPanel.setAnnouncement("Bot 1 " + bot1HitMiss + " " + bot1Move);
-                bot1Turn = false;
-            }
-            else{
+                statusPanel.setBottomString("Bot 1 " + bot1HitMiss + " " + bot1Move);
+                bot1Turn = false;}
+            else {
+
             Location bot2Move = bot2.selectMove();
             boolean bot2Hit = computer1.markLocation(bot2Move);
             String bot2HitMiss = bot2Hit ? "Hit" : "Missed";
-            statusPanel.setAnnouncement("Bot 2 " + bot2HitMiss + " " + bot2Move);
+            statusPanel.setBottomString("Bot 2 " + bot2HitMiss + " " + bot2Move);
+
             bot1Turn = true;
             }
         } else if(computer1.areAllShipsDestroyed()){
                 gameState = GameState.GAME_WIN;
                 statusPanel.showGameOver(true);
-                statusPanel.setAnnouncement("Bot 2 wins!");
+                statusPanel.setBottomString("Bot 2 wins!");
+                turnTimer.stop();
             }
-        else{
+            else{
                 gameState = GameState.GAME_LOSS;
                 statusPanel.showGameOver(true);
-                statusPanel.setAnnouncement("Bot 1 wins!");
+                statusPanel.setBottomString("Bot 1 wins!");
         }
 
         repaint();
@@ -201,7 +202,16 @@ public class BotPanel extends JPanel implements KeyListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
-
+        if (e.getKeyCode() == KeyEvent.VK_R) {
+            gameState = GameState.PLACING_SHIPS;
+            computer1.reset();
+            computer2.reset();
+            bot1.reset();
+            bot2.reset();
+            statusPanel.showGameOver(false);
+            statusPanel.setTopString("");
+            repaint();
+        }
     }
 
     @Override

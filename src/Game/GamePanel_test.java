@@ -65,7 +65,7 @@ public class GamePanel_test extends JPanel implements MouseListener, MouseMotion
         restartButton.addActionListener(e -> restart());
         JPanel buttonPanel = new JPanel();
         buttonPanel.add(restartButton);
-
+        // add(buttonPanel, BorderLayout.EAST);
     
         restart();
     
@@ -122,7 +122,7 @@ public class GamePanel_test extends JPanel implements MouseListener, MouseMotion
     }
 
     private void startGameTimer() {
-        countdown = timeLimit; // 10 seconds
+        countdown = timeLimit;
         if (gameTimer != null) {
             gameTimer.cancel();
         }
@@ -214,6 +214,8 @@ public class GamePanel_test extends JPanel implements MouseListener, MouseMotion
             gameTimer.cancel();
         } else {
             statusPanel.setAnnouncement("Computer's Turn");
+        else {
+            statusPanel.setBottomString("Computer's Turn");
             startGameTimer();
         }
     }

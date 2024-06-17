@@ -72,7 +72,7 @@ public class NightmareBot extends Bot {
     public Location getSmartMove() {
        List<Location> possibleMoves = getAdjacentSmartMoves();
        Collections.shuffle(possibleMoves);
-         return possibleMoves.getFirst();
+         return possibleMoves.get(0);
     }
 
     private Location getSmarterMove() {
@@ -92,11 +92,11 @@ public class NightmareBot extends Bot {
             }
         }
         Collections.shuffle(possibleMoves);
-        return possibleMoves.getFirst();
+        return possibleMoves.get(0);
     }
 
     public Location findEmptyPosition(){
-        Location location = possibleMoves.getFirst();
+        Location location = possibleMoves.get(0);
         int highestNotAttacked = -1;
 
         for (int i=0; i < possibleMoves.size(); i++){

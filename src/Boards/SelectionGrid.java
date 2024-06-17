@@ -82,6 +82,15 @@ public class SelectionGrid extends Coordinate implements LayoutManager {
      
       
     }
+    //Method to test ship
+    public void paintShips(Graphics g) {
+        for (Ship ship : ships) { // Assume ships is a List of Ship objects
+            for (Location location : ship.getOccupiedCoordinates()) {
+                g.setColor(Color.YELLOW);
+                g.fillRect(location.x * cellSize, location.y * cellSize, cellSize, cellSize);
+            }
+        }
+    }
 
     // show all the ships if set is true. showShips is true will make all the ships
     // on this grid be visible.
@@ -347,15 +356,6 @@ public class SelectionGrid extends Coordinate implements LayoutManager {
                 int offsetY = isSideways ? 0 : i;
                 Location markerLocation = new Location(location.x + offsetX, location.y + offsetY);
 
-            }
-        }
-    }
-    //Method to test ship
-    public void paintShips(Graphics g) {
-        for (Ship ship : ships) { // Assume ships is a List of Ship objects
-            for (Location location : ship.getOccupiedCoordinates()) {
-                g.setColor(Color.YELLOW);
-                g.fillRect(location.x * cellSize, location.y * cellSize, cellSize, cellSize);
             }
         }
     }

@@ -1,5 +1,8 @@
 package Game;
 import javax.swing.*;
+
+import BotThings.Bot;
+
 import java.awt.*;
 import java.awt.event.*;
 
@@ -141,32 +144,6 @@ private JPanel createBotvsBotPanel() {
     BotvsBotPanel.setLayout(new GridBagLayout());
     GridBagConstraints constraints = new GridBagConstraints();
 
-    JLabel timePerTurnLabel = new JLabel("Choose time limit: ");
-    constraints.gridx = 0;
-    constraints.gridy = 0;
-    constraints.gridwidth = 2;
-    BotvsBotPanel.add(timePerTurnLabel, constraints);
-
-    timePerTurnOption1 = new JRadioButton("60 seconds");
-    timePerTurnOption1.setSelected(true);
-    ButtonGroup timePerTurnGroup = new ButtonGroup();
-    timePerTurnGroup.add(timePerTurnOption1);
-    constraints.gridx = 0;
-    constraints.gridy = 1;
-    BotvsBotPanel.add(timePerTurnOption1, constraints);
-
-    timePerTurnOption2 = new JRadioButton("90 seconds");
-    timePerTurnGroup.add(timePerTurnOption2);
-    constraints.gridx = 2;
-    constraints.gridy = 1;
-    BotvsBotPanel.add(timePerTurnOption2, constraints);
-
-    timePerTurnOption3 = new JRadioButton("120 seconds");
-    timePerTurnGroup.add(timePerTurnOption3);
-    constraints.gridx = 4;
-    constraints.gridy = 1;
-    BotvsBotPanel.add(timePerTurnOption3, constraints);
-
     JLabel difficultyLabel1 = new JLabel("Choose AI difficulty for Bot 1: ");
     constraints.gridx = 0;
     constraints.gridy = 2;
@@ -220,15 +197,12 @@ private JPanel createBotvsBotPanel() {
         } else if (difficultyNightmare2.isSelected()) {
             difficultyChoice2 = 1; // Nightmare
         }
-
-        timePerTurn = getTimePerTurnValue();
-        BotPanel = new BotPanel(difficultyChoice1, difficultyChoice2, timePerTurn);
+      
+        BotPanel = new BotPanel(difficultyChoice1, difficultyChoice2);
         startFrame.getContentPane().removeAll();
         startFrame.getContentPane().add(BotPanel);
-        startFrame.pack();
-        startFrame.setLocationRelativeTo(null);
-        startFrame.setVisible(true);
-
+        startFrame.revalidate();
+        startFrame.repaint();
         BotPanel.startBotVsBotGame();
     });
     constraints.gridx = 0;
@@ -360,9 +334,6 @@ public int getTimePerTurnValue() {
 public void keyPressed(KeyEvent e) {
     if (gamePanel != null) {
         gamePanel.handleInput(e.getKeyCode());
-    }
-    if (BotPanel != null) {
-        BotPanel.handleInput(e.getKeyCode());
     }
 }
 

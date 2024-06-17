@@ -30,14 +30,13 @@ public class BotPanel extends JPanel implements KeyListener {
     boolean bot1Turn = true;
     private GameState gameState;
     public static boolean debugModeActive;
-    private int timeLimit;
-    private javax.swing.Timer turnTimer;
-    private int countdown;
-    private TimerTask countdownTask;
 
-    public BotPanel(int bot1Choice, int bot2Choice, int timeLimit) {
-        this.timeLimit = timeLimit;
-        this.countdown = timeLimit;
+    private javax.swing.Timer turnTimer ;
+  
+
+
+    public BotPanel(int bot1Choice, int bot2Choice) {
+       
         setPreferredSize(new Dimension(1000, 800));
         setBackground(new Color(42, 136, 163));
         
@@ -52,7 +51,8 @@ public class BotPanel extends JPanel implements KeyListener {
 
         Location statusPanelLocation = new Location(350, computer1.getHeight() + 1);
         statusPanel = new StatusPanel(statusPanelLocation, computer1.getWidth(), 49);
-
+        statusPanel.setTopString("Bot 1's Turn");
+        statusPanel.setBottomString("Bot 2's Turn");
         setFocusable(true);
         setFocusTraversalKeysEnabled(false);
         addKeyListener(new KeyListener() {
@@ -70,6 +70,7 @@ public class BotPanel extends JPanel implements KeyListener {
                     bot2.reset();
                     statusPanel.showGameOver(false);
                     repaint();
+                    statusPanel.setTopString("");
                 }
             }
 
@@ -80,8 +81,6 @@ public class BotPanel extends JPanel implements KeyListener {
 
         setLayout(new BorderLayout());
 
-        // Start the timer
-        startCountdownTimer();
     }
 
     private Bot createBot(int choice, SelectionGrid grid) {
@@ -97,7 +96,7 @@ public class BotPanel extends JPanel implements KeyListener {
         bot1.placeShips();
         bot2.placeShips();
         gameState = GameState.FIRING;
-        turnTimer = new javax.swing.Timer(1000, e -> playTurn());
+        turnTimer = new javax.swing.Timer(500, e -> playTurn());
         turnTimer.start();
     }
 
@@ -109,7 +108,7 @@ public class BotPanel extends JPanel implements KeyListener {
                 Location bot1Move = bot1.selectMove();
                 boolean bot1Hit = computer2.markLocation(bot1Move);
                 String bot1HitMiss = bot1Hit ? "Hit" : "Missed";
-                statusPanel.setBottomString("Bot 1 " + bot1HitMiss + " " + bot1Move);
+                statusPanel.setTopString("Bot 1 " + bot1HitMiss + " " + bot1Move);
                 bot1Turn = false;}
             else {
 
@@ -121,47 +120,21 @@ public class BotPanel extends JPanel implements KeyListener {
             bot1Turn = true;
             }
         } else if(computer1.areAllShipsDestroyed()){
-                gameState = GameState.GAME_WIN;
-                statusPanel.showGameOver(true);
-                statusPanel.setBottomString("Bot 2 wins!");
+                statusPanel.setTopString("Bot 2 wins!");
+                statusPanel.setBottomString("");
                 turnTimer.stop();
             }
             else{
-                gameState = GameState.GAME_LOSS;
-                statusPanel.showGameOver(true);
-                statusPanel.setBottomString("Bot 1 wins!");
+                
+                statusPanel.setTopString("Bot 1 wins!");
+                statusPanel.setBottomString("");
+               
         }
 
         repaint();
     }
 
-    private void startCountdownTimer() {
-        countdownTask = new TimerTask() {
-            @Override
-            public void run() {
-                if (countdown > 0) {
-                    countdown--;
-                    repaint();
-                } else {
-                    this.cancel();
-                    handleTimeOut();
-                }
-            }
-        };
-
-        Timer countdownTimer = new Timer();
-        countdownTimer.scheduleAtFixedRate(countdownTask, 1000, 1000); // Start after 1 second, repeat every 1 second
-    }
-
-    private void handleTimeOut() {
-        gameState = GameState.GAME_WIN; // Or a different state to indicate timeout
-        statusPanel.setBottomString("Time's up! Game Over.");
-        statusPanel.showGameOver(false);
-        if (turnTimer != null) {
-            turnTimer.stop();
-        }
-        repaint();
-    }
+    
 
     @Override
     protected void paintComponent(Graphics g) {
@@ -169,53 +142,29 @@ public class BotPanel extends JPanel implements KeyListener {
         computer1.paint(g);
         computer2.paint(g);
         statusPanel.paint(g);
-
-        // Draw the countdown timer
-        g.setColor(Color.WHITE);
-        g.setFont(new Font("Arial", Font.BOLD, 20));
-        g.drawString("Time Left: " + countdown + " s", getWidth() - 250, 50);
-    }
-   public void restart() {
-        computer2.reset();
-        computer1.reset();
-        bot1.reset();
-        bot2.reset();
-        bot1.placeShips();
-        bot2.placeShips();
-        gameState = GameState.FIRING;
-        statusPanel.reset();
-        startCountdownTimer();
-    
     }
     public static boolean debugModeActive() {
         return debugModeActive;
     }
 
-    public void handleInput(int keyCode) {
-
-    }
+   
 
     @Override
     public void keyTyped(KeyEvent e) {
-
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'keyTyped'");
     }
 
     @Override
     public void keyPressed(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_R) {
-            gameState = GameState.PLACING_SHIPS;
-            computer1.reset();
-            computer2.reset();
-            bot1.reset();
-            bot2.reset();
-            statusPanel.showGameOver(false);
-            statusPanel.setTopString("");
-            repaint();
-        }
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'keyPressed'");
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
-
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'keyReleased'");
     }
+
 }

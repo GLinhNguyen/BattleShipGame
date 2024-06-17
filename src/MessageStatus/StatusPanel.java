@@ -41,6 +41,7 @@ public class StatusPanel extends Coordinate {
         bottomString = "Click W to rotate your ships";
     }
 
+
     public String getMessage() {
         if (currentState == GameState.PLACING_SHIPS) {
             return messages.get(0).getTopString();

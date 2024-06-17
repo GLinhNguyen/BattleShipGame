@@ -223,7 +223,7 @@ public class GameMenu extends KeyAdapter {
             }
 
             timePerTurn = getTimePerTurnValue();
-            BotPanel = new BotPanel(difficultyChoice1, difficultyChoice2, timePerTurn);
+            BotPanel = new BotPanel(difficultyChoice1, difficultyChoice2, getTimePerTurnValue());
             startFrame.getContentPane().removeAll();
             startFrame.getContentPane().add(BotPanel);
             startFrame.pack();

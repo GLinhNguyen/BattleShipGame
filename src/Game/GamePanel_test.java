@@ -207,7 +207,7 @@ public class GamePanel_test extends JPanel implements MouseListener, MouseMotion
         if (hit && computer.getMarkerAtLocation(targetPosition).getAssociatedShip().isDestroyed()) {
             destroyed = "(Destroyed)";
         }
-        statusPanel.setBottomString("Player " + hitMiss + " " + targetPosition + destroyed);
+        statusPanel.setTopString("Player " + hitMiss + " " + targetPosition + destroyed);
         if (computer.areAllShipsDestroyed()) {
             gameState = GameState.GAME_WIN;
             statusPanel.showGameOver(true);

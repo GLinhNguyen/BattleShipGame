@@ -30,7 +30,7 @@ public class MainBotTest implements KeyListener {
         frame.setResizable(false);
 
         // Initialize game panel with bot choices
-        gamePanel = new BotPanel(bot1Choice, bot2Choice,4000);
+        gamePanel = new BotPanel(bot1Choice, bot2Choice);
 
         frame.getContentPane().add(gamePanel);
         frame.pack();

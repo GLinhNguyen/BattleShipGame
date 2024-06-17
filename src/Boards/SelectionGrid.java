@@ -3,7 +3,7 @@ package Boards;
 define the grid for storing ships
 define the grid of markers to indicate hit/ miss detection  */
 
-import Game.GamePanel_test;
+import Game.GamePanel;
 
 
 import java.awt.*;
@@ -71,7 +71,7 @@ public class SelectionGrid extends Coordinate implements LayoutManager {
      */
     public void paint(Graphics g) {
         for (Ship ship : ships) {
-            if (showShips || GamePanel_test.debugModeActive() || ship.isDestroyed()) {
+            if (showShips || GamePanel.debugModeActive() || ship.isDestroyed()) {
                 ship.paint(g);
             }
         }

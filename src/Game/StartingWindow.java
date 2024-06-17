@@ -1,16 +1,18 @@
 package Game;
+import javax.imageio.ImageIO;
 import javax.swing.*;
 
 import BotThings.Bot;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.io.IOException;
 
-public class StartingWindow extends KeyAdapter {
+public class StartingWindow implements KeyListener {
 private JFrame startFrame;
 private JPanel mainPanel;
 private CardLayout cardLayout;
-private GamePanel_test gamePanel;
+private GamePanel gamePanel;
 private BotPanel BotPanel;
 private JButton playvsBotButton, settingsButton, BotvsBotButton;
 private JRadioButton timePerTurnOption1, timePerTurnOption2, timePerTurnOption3;
@@ -18,12 +20,15 @@ private JRadioButton difficultyEasy, difficultyNightmare;
 private JRadioButton difficultyEasy1, difficultyNightmare1;
 private JRadioButton difficultyEasy2, difficultyNightmare2;
 private int difficultyChoice, difficultyChoice1, difficultyChoice2, timePerTurn;
+private Image bgImage;
 
 public static void main(String[] args) {
     EventQueue.invokeLater(() -> {
         try {
             StartingWindow window = new StartingWindow();
             window.startFrame.setVisible(true);
+          
+            
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -38,26 +43,38 @@ private void initialize() {
     startFrame = new JFrame();
     startFrame.setBounds(100, 100, 1000, 800);
     startFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    startFrame.addKeyListener(this);
+    startFrame.requestFocusInWindow();
+    startFrame.setFocusable(true);
+    startFrame.setLocationRelativeTo(null);
 
+    try {
+        bgImage = ImageIO.read(getClass().getResourceAsStream("/Graphics/Background2-no button.png"));
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
     mainPanel = new JPanel();
     cardLayout = new CardLayout();
     mainPanel.setLayout(cardLayout);
     startFrame.getContentPane().add(mainPanel, BorderLayout.CENTER);
-
+    startFrame.setResizable(false);
     mainPanel.add(createStartPanel(), "Start");
     mainPanel.add(createBotvsBotPanel(), "BotvsBot");
     mainPanel.add(createSettingPanel(), "Settings");
-
+   
     cardLayout.show(mainPanel, "Start");
-    startFrame.setResizable(false);
-    startFrame.addKeyListener(this);
-    startFrame.setFocusable(true);
 }
 
 private JPanel createStartPanel() {
-    JPanel startPanel = new JPanel();
+    JPanel startPanel = new JPanel() {
+        @Override
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            g.drawImage(bgImage, 0, 0, null);
+        }
+    };
     startPanel.setLayout(null);
-
+    
     // Add play vs bot button
     ImageIcon playvsBot = new ImageIcon(getClass().getResource("/Graphics/playvsBot.png"));
     playvsBotButton = new JButton(playvsBot);
@@ -65,7 +82,8 @@ private JPanel createStartPanel() {
     playvsBotButton.setRolloverEnabled(false);
     playvsBotButton.setMargin(new Insets(0, 0, 0, 0));
     playvsBotButton.setBorder(null);
-    playvsBotButton.setBounds(350, 550, 275, 41);
+    playvsBotButton.setContentAreaFilled(false);
+    playvsBotButton.setBounds(350, 600, 275, 41);
     startPanel.add(playvsBotButton);
 
     // Add hover effect
@@ -89,7 +107,8 @@ private JPanel createStartPanel() {
     BotvsBotButton.setRolloverEnabled(false);
     BotvsBotButton.setMargin(new Insets(0, 0, 0, 0));
     BotvsBotButton.setBorder(null);
-    BotvsBotButton.setBounds(350, 650, 275, 41);
+    BotvsBotButton.setContentAreaFilled(false);
+    BotvsBotButton.setBounds(350, 650, 274, 41);
     startPanel.add(BotvsBotButton);
 
     // Add hover effect
@@ -111,7 +130,9 @@ private JPanel createStartPanel() {
     settingsButton = new JButton(settingIcon);
     settingsButton.setFocusPainted(false);
     settingsButton.setRolloverEnabled(false);
+    settingsButton.setContentAreaFilled(false);
     settingsButton.setBounds(350, 700, 275, 41);
+   
     startPanel.add(settingsButton);
 
     ImageIcon hoverSettingIcon = new ImageIcon(getClass().getResource("/Graphics/hoverSettings.png"));
@@ -127,7 +148,7 @@ private JPanel createStartPanel() {
         }
     });
 
-    settingsButton.setMargin(new Insets(0, 0, 0, 0));
+    settingsButton.setMargin(new Insets(20, 20, 20, 20));
     settingsButton.setBorder(null);
 
     playvsBotButton.addActionListener(e -> startGame());
@@ -206,13 +227,13 @@ private JPanel createBotvsBotPanel() {
         BotPanel.startBotVsBotGame();
     });
     constraints.gridx = 0;
-    constraints.gridy = 6;
+    constraints.gridy = 7;
     constraints.gridwidth = 2;
     BotvsBotPanel.add(startGameButton, constraints);
 
     JButton backButton = new JButton("Back");
     backButton.addActionListener(e -> cardLayout.show(mainPanel, "Start"));
-    constraints.gridx = 0;
+    constraints.gridx = 3;
     constraints.gridy = 7;
     constraints.gridwidth = 2;
     BotvsBotPanel.add(backButton, constraints);
@@ -291,8 +312,8 @@ private JPanel createSettingPanel() {
 
     JButton backButton = new JButton("Back");
     backButton.addActionListener(e -> cardLayout.show(mainPanel, "Start"));
-    constraints.gridx = 0;
-    constraints.gridy = 5;
+    constraints.gridx = 2;
+    constraints.gridy = 4;
     constraints.gridwidth = 2;
     settingPanel.add(backButton, constraints);
 
@@ -301,14 +322,14 @@ private JPanel createSettingPanel() {
 
 public void startGame() {
     if(playvsBotButton.isSelected()){
-        gamePanel = new GamePanel_test(0, 10000);
+        gamePanel = new GamePanel(0, 10000);
         startFrame.getContentPane().removeAll();
         startFrame.getContentPane().add(gamePanel);
         startFrame.revalidate();
         startFrame.repaint();
         }
         else{
-            gamePanel = new GamePanel_test(difficultyChoice, getTimePerTurnValue());
+            gamePanel = new GamePanel(difficultyChoice, getTimePerTurnValue());
             startFrame.getContentPane().removeAll();
             startFrame.getContentPane().add(gamePanel);
             startFrame.revalidate();
@@ -332,9 +353,7 @@ public int getTimePerTurnValue() {
 
 @Override
 public void keyPressed(KeyEvent e) {
-    if (gamePanel != null) {
         gamePanel.handleInput(e.getKeyCode());
-    }
 }
 
 @Override

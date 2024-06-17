@@ -212,8 +212,7 @@ public class GamePanel_test extends JPanel implements MouseListener, MouseMotion
             gameState = GameState.GAME_WIN;
             statusPanel.showGameOver(true);
             gameTimer.cancel();
-        } else {
-            statusPanel.setAnnouncement("Computer's Turn");
+        }
         else {
             statusPanel.setBottomString("Computer's Turn");
             startGameTimer();

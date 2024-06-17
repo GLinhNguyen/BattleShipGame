@@ -2,26 +2,18 @@ package Game;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-    private JRadioButton timePerTurnOption2;
-    private CardLayout cardLayout;
-    public static void main(String[] args) {
-    }
-
-    public StartingWindow() {
-        startFrame = new JFrame("Battleship Game");
-        startFrame.setBounds(100, 100, 1000, 800);
-        startFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        startFrame.setSize(1000, 800);
-        startFrame.setResizable(false);
-        startFrame.setLocationRelativeTo(null);
-        startFrame.setFocusable(true);
-        startFrame.addKeyListener(this);
 
 public class StartingWindow extends KeyAdapter {
 private JFrame startFrame;
 private JPanel mainPanel;
+private CardLayout cardLayout;
+private GamePanel_test gamePanel;
 private BotPanel BotPanel;
+private JButton playvsBotButton, settingsButton, BotvsBotButton;
+private JRadioButton timePerTurnOption1, timePerTurnOption2, timePerTurnOption3;
 private JRadioButton difficultyEasy, difficultyNightmare;
+private JRadioButton difficultyEasy1, difficultyNightmare1;
+private JRadioButton difficultyEasy2, difficultyNightmare2;
 private int difficultyChoice, difficultyChoice1, difficultyChoice2, timePerTurn;
 
 public static void main(String[] args) {

@@ -131,7 +131,7 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
         buttonPanel.add(redoButton, BorderLayout.EAST);
 
         // Add hover effect of redo Button
-        ImageIcon hoverRedo = new ImageIcon(getClass().getResource("/Graphics/redoButton.png"));
+        ImageIcon hoverRedo = new ImageIcon(getClass().getResource("/Graphics/hoverRedo.png"));
         redoButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -187,7 +187,7 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
             System.exit(1);
         } else if (keyCode == KeyEvent.VK_R) {
             restart();
-        } else if (gameState == GameState.PLACING_SHIPS && keyCode == KeyEvent.VK_W) {
+        } else if (gameState == GameState.PLACING_SHIPS && keyCode == KeyEvent.VK_Q) {
             placingShip.toggleSideways();
             updateShipPlacement(tempPlacingPosition);
         } else if (keyCode == KeyEvent.VK_D) {

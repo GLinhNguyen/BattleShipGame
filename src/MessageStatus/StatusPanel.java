@@ -38,7 +38,7 @@ public class StatusPanel extends Coordinate {
 
     public void reset() {
         topString = "Place your ships";
-        bottomString = "Click W to rotate your ships";
+        bottomString = "Click Q to rotate your ships";
     }
 
 

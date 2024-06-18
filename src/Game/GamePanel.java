@@ -38,6 +38,8 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
     private Timer gameTimer;
     private int countdown;
     private JButton restartButton;
+    private JButton undoButton;
+    private JButton redoButton;
     private Image bgImage;
     private JButton playvsBotButton;
     private JButton undo;
@@ -51,8 +53,8 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
         this.timeLimit = countdownDuration;
         setPreferredSize(new Dimension(1000, 800)); // Set to your desired dimensions
         currentState = GameState.PLACING_SHIPS;
-        computer = new SelectionGrid(320, 0);
-        playerGrid = new SelectionGrid(320, computer.getHeight() + 50);
+        computer = new SelectionGrid(285, 0);
+        playerGrid = new SelectionGrid(285, computer.getHeight() + 50);
     
         if (aiChoice == 0) {
             aiController = new EasyBot(playerGrid);
@@ -60,7 +62,7 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
             aiController = new NightmareBot(playerGrid, aiChoice == 2, aiChoice == 2);
         }
     
-        Location statusPanelLocation = new Location(320, computer.getHeight() + 1);
+        Location statusPanelLocation = new Location(285, computer.getHeight() + 1);
         statusPanel = new StatusPanel(statusPanelLocation, computer.getWidth(), 49);
     
         setLayout(new BorderLayout());
@@ -70,46 +72,87 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
         
     
         // BUTTON PANEL
-        restartButton = new JButton("Restart");
-        restartButton.addActionListener(e -> restart());
+        // restartButton = new JButton("Restart");
+        // restartButton.addActionListener(e -> restart());
         JPanel buttonPanel = new JPanel();
-        buttonPanel.setOpaque(false);
-        buttonPanel.add(restartButton);
-
-        undo = new JButton("Undo");
-        undo.addActionListener(e -> undo());
-        buttonPanel.add(undo);
-        add(buttonPanel, BorderLayout.EAST);
+        buttonPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
+        buttonPanel.setBounds(700, 600, 275, 41); // Adjust the position and size as needed
+        buttonPanel.setOpaque(false); // Ensure the panel is transparent if needed
+        buttonPanel.setLayout(null); 
+       
 
         //Restart Button (để sau)
-        // ImageIcon playvsBot = new ImageIcon(getClass().getResource("/Graphics/restart.png"));
-        // playvsBotButton = new JButton(playvsBot);
-        // playvsBotButton.setFocusPainted(false);
-        // playvsBotButton.setRolloverEnabled(false);
-        // playvsBotButton.setMargin(new Insets(0, 0, 0, 0));
-        // playvsBotButton.setBorder(null);
-        // playvsBotButton.setContentAreaFilled(false);
-        // playvsBotButton.setBounds(700, 600, 275, 41);
-        // buttonPanel.add(playvsBotButton);
-        // // Add hover effect of Restart Button
-        // ImageIcon hoverIcon = new ImageIcon(getClass().getResource("/Graphics/hoverRestart.png"));
-        // playvsBotButton.addMouseListener(new MouseAdapter() {
-        //     @Override
-        //     public void mouseEntered(MouseEvent e) {
-        //         playvsBotButton.setIcon(hoverIcon);
-        //     }
+        ImageIcon restart = new ImageIcon(getClass().getResource("/Graphics/restart.png"));
+        restartButton = new JButton(restart);
+        restartButton.setFocusPainted(false);
+        restartButton.setRolloverEnabled(false);
+        restartButton.setMargin(new Insets(0, 0, 0, 0));
+        restartButton.setBorder(null);
+        restartButton.setContentAreaFilled(false);
+        restartButton.setBounds(820, 13, 280, 50);
+        restartButton.addActionListener(e -> restart());
+        buttonPanel.add(restartButton, BorderLayout.EAST);
+
+        //Undo Button
+        ImageIcon undo = new ImageIcon(getClass().getResource("/Graphics/undoButton.png"));
+        undoButton = new JButton(undo);
+        undoButton.setFocusPainted(false);
+        undoButton.setRolloverEnabled(false);
+        undoButton.setMargin(new Insets(0, 0, 0, 0));
+        undoButton.setBorder(null);
+        undoButton.setContentAreaFilled(false);
+        undoButton.setBounds(680, 400, 275, 41);
+        undoButton.addActionListener(e -> undo());
+        buttonPanel.add(undoButton, BorderLayout.EAST);
+
+        // Add hover effect of Undo Button
+        ImageIcon hoverIcon = new ImageIcon(getClass().getResource("/Graphics/hoverUndo.png"));
+        undoButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                undoButton.setIcon(hoverIcon);
+            }
     
-        //     @Override
-        //     public void mouseExited(MouseEvent e) {
-        //         playvsBotButton.setIcon(playvsBot);
-        //     }
-        // });
+            @Override
+            public void mouseExited(MouseEvent e) {
+                undoButton.setIcon(undo);
+            }
+        });
+
+        ImageIcon redo = new ImageIcon(getClass().getResource("/Graphics/redoButton.png"));
+        redoButton = new JButton(redo);
+        redoButton.setFocusPainted(false);
+        redoButton.setRolloverEnabled(false);
+        redoButton.setMargin(new Insets(0, 0, 0, 0));
+        redoButton.setBorder(null);
+        redoButton.setContentAreaFilled(false);
+        redoButton.setBounds(680, 470, 275, 41);
+        redoButton.addActionListener(e -> redo());
+        buttonPanel.add(redoButton, BorderLayout.EAST);
+
+        // Add hover effect of redo Button
+        ImageIcon hoverRedo = new ImageIcon(getClass().getResource("/Graphics/redoButton.png"));
+        redoButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                redoButton.setIcon(hoverRedo);
+            }
     
+            @Override
+            public void mouseExited(MouseEvent e) {
+                redoButton.setIcon(redo);
+            }
+        });
+
+
+
+
+        add(buttonPanel);
         restart();
     
         // Load the background image
          try {
-            bgImage = ImageIO.read(getClass().getResourceAsStream("/Graphics/BG-gamPanel.png"));
+            bgImage = ImageIO.read(getClass().getResourceAsStream("/Graphics/BG-gamPanel1.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -158,7 +201,7 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
         g.setColor(Color.WHITE);
         g.setFont(new Font("Efour Digital Pro", Font.BOLD, 30));
         String timerText = "Time: " + countdown + "s";
-        g.drawString(timerText, getWidth() - 200, 50);
+        g.drawString(timerText, getWidth() - 210, 50);
     }
 
     private void startGameTimer() {
@@ -302,6 +345,23 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
             }
         }
         
+        repaint();
+    }
+    private void redo() {
+        if (gameState == GameState.PLACING_SHIPS) {
+            return;
+        }
+        else if (gameState == GameState.FIRING) {
+            if (!redoPlayerStack.isEmpty() && !redoBotStack.isEmpty()) {
+                Move nextPlayerMove = redoPlayerStack.pop();
+                Move nextBotMove = redoBotStack.pop();
+                PlayerStack.push(nextPlayerMove); // Add back to undo stack
+                BotStack.push(nextBotMove); // Add back to undo stack
+                // playerGrid.unmarkLocation(nextPlayerMove.getLocation());
+                computer.markLocation(nextPlayerMove.getLocation());
+                playerGrid.markLocation(nextBotMove.getLocation());
+            }
+        }
         repaint();
     }
 

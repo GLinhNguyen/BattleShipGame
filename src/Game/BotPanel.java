@@ -13,9 +13,12 @@ import Functions.Ship;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.IOException;
 import java.util.*;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import javax.imageio.ImageIO;
 import javax.swing.*;
 
 import Boards.Location;
@@ -30,6 +33,7 @@ public class BotPanel extends JPanel implements KeyListener {
     boolean bot1Turn = true;
     private GameState gameState;
     public static boolean debugModeActive;
+    private Image bgImage;
 
     private javax.swing.Timer turnTimer ;
   
@@ -41,15 +45,15 @@ public class BotPanel extends JPanel implements KeyListener {
         setBackground(new Color(42, 136, 163));
         
         gameState = GameState.PLACING_SHIPS;
-        computer1 = new SelectionGrid(350, 0);
-        computer2 = new SelectionGrid(350, computer1.getHeight() + 50);
+        computer1 = new SelectionGrid(320, 0);
+        computer2 = new SelectionGrid(320, computer1.getHeight() + 50);
        
 
         // Initialize bots based on choices
         bot1 = createBot(bot1Choice, computer1);
         bot2 = createBot(bot2Choice, computer2);
 
-        Location statusPanelLocation = new Location(350, computer1.getHeight() + 1);
+        Location statusPanelLocation = new Location(320, computer1.getHeight() + 1);
         statusPanel = new StatusPanel(statusPanelLocation, computer1.getWidth(), 49);
         statusPanel.setTopString("Bot 1's Turn");
         statusPanel.setBottomString("Bot 2's Turn");
@@ -79,7 +83,11 @@ public class BotPanel extends JPanel implements KeyListener {
             }
         });
 
-        setLayout(new BorderLayout());
+         try {
+            bgImage = ImageIO.read(getClass().getResourceAsStream("/Graphics/BG-gamPanel.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -139,6 +147,9 @@ public class BotPanel extends JPanel implements KeyListener {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
+        if (bgImage != null) {
+            g.drawImage(bgImage, 0, 0, getWidth(), getHeight(), this);
+        }
         computer1.paint(g);
         computer2.paint(g);
         statusPanel.paint(g);

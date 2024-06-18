@@ -18,6 +18,7 @@ import Boards.Location;
 import Boards.SelectionGrid;
 
 import java.awt.*;
+import java.util.Stack;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -39,6 +40,11 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
     private JButton restartButton;
     private Image bgImage;
     private JButton playvsBotButton;
+    private JButton undo;
+    private Stack<Move> redoPlayerStack = new Stack<>();
+    private Stack<Move> redoBotStack = new Stack<>();
+    private Stack<Move> PlayerStack = new Stack<>();
+    private Stack<Move> BotStack = new Stack<>();
 
    
     public GamePanel(int aiChoice, int countdownDuration) {
@@ -69,6 +75,10 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
         JPanel buttonPanel = new JPanel();
         buttonPanel.setOpaque(false);
         buttonPanel.add(restartButton);
+
+        undo = new JButton("Undo");
+        undo.addActionListener(e -> undo());
+        buttonPanel.add(undo);
         add(buttonPanel, BorderLayout.EAST);
 
         //Restart Button (để sau)
@@ -210,6 +220,7 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
     private void placeShip(Location targetPosition) {
         placingShip.setShipPlacementColour(Ship.ShipPlacementColour.Placed);
         playerGrid.placeShip(placingShip, tempPlacingPosition.x, tempPlacingPosition.y);
+        PlayerStack.push(new Move(tempPlacingPosition, true, placingShipIndex));
         placingShipIndex++;
         if (placingShipIndex < SelectionGrid.boatSize.length) {
             placingShip = new Ship(new Location(targetPosition.x, targetPosition.y), new Location(playerGrid.getLocation().x + targetPosition.x * SelectionGrid.cellSize, playerGrid.getLocation().y + targetPosition.y * SelectionGrid.cellSize), SelectionGrid.boatSize[placingShipIndex], true);
@@ -232,6 +243,7 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 
     private void doPlayerTurn(Location targetPosition) {
         boolean hit = computer.markLocation(targetPosition);
+        PlayerStack.push(new Move(targetPosition, true,placingShipIndex)); // Add the move to the stack
         String hitMiss = hit ? "Hit" : "Missed";
         String destroyed = "";
         if (hit && computer.getMarkerAtLocation(targetPosition).getAssociatedShip().isDestroyed()) {
@@ -249,9 +261,12 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
         }
     }
 
+
     private void doAITurn() {
         Location aiMove = aiController.selectMove();
         boolean hit = playerGrid.markLocation(aiMove);
+        BotStack.push(new Move(aiMove, false,placingShipIndex)); // Add the move to the stack
+       
         String hitMiss = hit ? "Hit" : "Missed";
         String destroyed = "";
         if (hit && playerGrid.getMarkerAtLocation(aiMove).getAssociatedShip().isDestroyed()) {
@@ -264,6 +279,33 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
             gameTimer.cancel();
         }  
     }
+    private void undo() {
+        if (gameState == GameState.PLACING_SHIPS) {
+            if (!PlayerStack.isEmpty()) {
+                Move lastMove = PlayerStack.pop();
+                redoPlayerStack.push(lastMove); // Add to redo stack
+                playerGrid.removeShip(lastMove.getLocation());
+                
+                placingShipIndex--;
+                placingShip = new Ship(lastMove.getLocation(), new Location(playerGrid.getLocation().x + lastMove.getLocation().x * SelectionGrid.cellSize, playerGrid.getLocation().y + lastMove.getLocation().y * SelectionGrid.cellSize), SelectionGrid.boatSize[placingShipIndex], true);
+                updateShipPlacement(lastMove.getLocation());
+            }
+        } else if (gameState == GameState.FIRING) {
+            if (!PlayerStack.isEmpty() && !BotStack.isEmpty()) {
+                Move lastPlayerMove = PlayerStack.pop();
+                Move lastBotMove = BotStack.pop();
+                redoPlayerStack.push(lastPlayerMove); // Add to redo stack
+                redoBotStack.push(lastBotMove); // Add to redo stack
+                playerGrid.removeDestroyedShip(lastBotMove.getLocation());
+                computer.removeDestroyedShip(lastPlayerMove.getLocation());
+
+            }
+        }
+        
+        repaint();
+    }
+
+    
 
     private void tryMovePlacingShip(Location mousePosition) {
         if (playerGrid.isLocationWithinCoordinate(mousePosition)) {
@@ -345,7 +387,27 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
     }
 
     @Override
-    public void mouseClicked(MouseEvent e) {}
+    public void mouseClicked(MouseEvent e) {
+        Location mousePosition = new Location(e.getX(), e.getY());
+        if (gameState == GameState.PLACING_SHIPS) {
+            tryPlaceShip(mousePosition);
+        } else if (gameState == GameState.FIRING) {
+            if (computer.isLocationWithinCoordinate(new Location(mousePosition.x, mousePosition.y))) {
+                Location targetPosition = computer.getLocationWithinGrid(mousePosition.x, mousePosition.y);
+                if (computer.isLocationMarked(targetPosition)) {
+                    return;
+                }
+                computer.markLocation(targetPosition);
+                PlayerStack.push(new Move(targetPosition, true, placingShipIndex)); // Record player's move
+                Move botMove = new Move(new Location(aiController.getNextMove()), false,placingShipIndex);
+                BotStack.push(botMove); // Record bot's move
+                playerGrid.markLocation(botMove.getLocation());
+                // Check for game over conditions
+                // ...
+            }
+        }
+        repaint();
+    }
     @Override
     public void mousePressed(MouseEvent e) {}
     @Override

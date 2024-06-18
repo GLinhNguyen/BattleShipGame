@@ -9,8 +9,10 @@ public class Marker extends Coordinate {
     // color when there are no ship
     private final Color MISS_COLOUR = new Color(97, 75, 242);
     private final int PADDING = 3;
+    private boolean showDestroyedMarker; 
     // true maker will paint
     private boolean showMarker;
+    private final Color DESTROYED_COLOR = new Color(255, 0, 0);
     // have ship-> hit_color
     // No ship -> missing_color
     private Ship shipAtMarker;
@@ -23,6 +25,24 @@ public class Marker extends Coordinate {
         shipAtMarker = null;
         showMarker = false;
     }
+
+    public void resetForUndo() {
+        showMarker = false;
+        showDestroyedMarker = false;
+    }
+
+    public void resetHitMarker() {
+        if (showMarker && !isShip()) {
+            showMarker = false;
+        }
+    }
+
+    public void resetDestroyedMarker() {
+        if (showMarker && isShip() && shipAtMarker.isDestroyed()) {
+            showMarker = false;
+        }
+    }
+
     // If not previously marked it will tell the associated ship that
     //another section has been destroyed. Then mark the marker to make
     //it visible for drawing.
@@ -31,6 +51,10 @@ public class Marker extends Coordinate {
             shipAtMarker.destroySection();
         }
         showMarker = true;
+    }
+
+    public void unmark() {
+        showMarker = false;
     }
     // get if maker interacted with , return true if maker is visualble
     public boolean isMarked() {
@@ -49,14 +73,21 @@ public class Marker extends Coordinate {
         return shipAtMarker;
     }
     public void paint(Graphics g) {
-        if(!showMarker) return;
-
-        g.setColor(isShip() ? HIT_COLOUR : MISS_COLOUR);
-        g.fillRect(location.x+PADDING+1, location.y+PADDING+1, width-PADDING*2, height-PADDING*2);
-
+        if (!showMarker) return;
+        if (shipAtMarker != null && shipAtMarker.isDestroyed()) {
+            g.setColor(DESTROYED_COLOR);
+        } else if (showMarker && !isShip()) {
+            g.setColor(MISS_COLOUR);
+        } else if (showMarker && isShip()) {
+            g.setColor(HIT_COLOUR);
+        } else {
+            return;
+        }
+        g.fillRect(location.x + PADDING + 1, location.y + PADDING + 1, width - PADDING * 2, height - PADDING * 2);
     }
 
     }
+
 
 
 

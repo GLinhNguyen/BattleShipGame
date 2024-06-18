@@ -114,6 +114,8 @@ public class SelectionGrid extends Coordinate implements LayoutManager {
         allShipsDestroyed = false;
     }
 
+  
+
     // Marks the specified location and then checks if all ships have been destroyed
     public boolean markLocation(Location locToMark) {
         markers[locToMark.x][locToMark.y].mark();
@@ -127,6 +129,7 @@ public class SelectionGrid extends Coordinate implements LayoutManager {
         }
         return markers[locToMark.x][locToMark.y].isShip();
     }
+
 
     /**
      * Checks if all ships have been destroyed or not.
@@ -333,32 +336,110 @@ public class SelectionGrid extends Coordinate implements LayoutManager {
             }
         }
     }
+    public void unmarkLocation(Location locToMark) {
+        markers[locToMark.x][locToMark.y].unmark();
+        // Recheck the destruction status if needed
+        allShipsDestroyed = true;
+        for (Ship ship : ships) {
+            if (ship.isDestroyed()) {
+                allShipsDestroyed = false;
+            }
+           
+        }
+    }
 
     public void removeShip(Location location) {
-        // Find the ship at the specified location
+        Marker marker = markers[location.x][location.y];
+        if (marker.isMarked()) {
+            marker.unmark();
+        }//remove marker
+
+        Ship shipToRemove = marker.getAssociatedShip();
+        if (shipToRemove != null) {
+            resetShipMarkers1(location, shipToRemove);
+            ships.remove(shipToRemove);
+        }
+
+        // Recheck all ships destruction status
+        allShipsDestroyed = ships.isEmpty() || ships.stream().allMatch(Ship::isDestroyed);
+    }
+
+    public void removeDestroyedShip(Location location) {
+        Marker marker = markers[location.x][location.y];
+        
+        if (marker.isMarked()) {
+            marker.unmark();
+        }
+        
+        Ship shipToRemove = marker.getAssociatedShip();
+        if (shipToRemove != null) {
+            resetShipMarkers(location,shipToRemove);
+            ships.remove(shipToRemove);
+        }
+
+        // Recheck all ships destruction status
+        allShipsDestroyed = ships.isEmpty() || ships.stream().allMatch(Ship::isDestroyed);
+    }
+
+    private void resetShipMarkers(Location location,Ship ship) {
+        for (int x = 0; x < gridXNum; x++) {
+            for (int y = 0; y < gridYNum; y++) {
+                Marker marker = markers[x][y];
+                if (marker.getAssociatedShip() == ship) {
+                    marker.resetHitMarker();
+                    marker.resetDestroyedMarker();
+                }
+            }
+        }
+    }
+
+
+
+    private void resetShipMarkers1(Location location, Ship ship) {
+        int shipSize = ship.getSegments();
+        boolean isSideways = ship.isSideways();
+        for (int i = 0; i < shipSize; i++) {
+            int offsetX = isSideways ? i : 0;
+            int offsetY = isSideways ? 0 : i;
+            markers[location.x + offsetX][location.y + offsetY].reset();
+        }
+    }
+    
+    public void removeShipForRedo(Location location){
         Ship shipToRemove = null;
-        for (Ship ship : ships) { // Assuming ships is a List or similar data structure storing ships
+        for (Ship ship : ships) {
             if (ship.getGridPosition().equals(location)) {
                 shipToRemove = ship;
                 break;
             }
         }
-
+    
         if (shipToRemove != null) {
-            // Remove the ship from the list of ships
             ships.remove(shipToRemove);
-
-            // Update grid markers based on ship size and orientation
+            
             int shipSize = shipToRemove.getSegments();
             boolean isSideways = shipToRemove.isSideways();
+            
+            // Reset markers for the ship's segments at the current location
             for (int i = 0; i < shipSize; i++) {
                 int offsetX = isSideways ? i : 0;
                 int offsetY = isSideways ? 0 : i;
-                Location markerLocation = new Location(location.x + offsetX, location.y + offsetY);
-
+                markers[location.x + offsetX][location.y + offsetY].reset();
+            }
+    
+            // If the ship is sideways, reset additional markers horizontally
+            if (isSideways) {
+                for (int x = 0; x < shipSize; x++) {
+                    markers[location.x + x][location.y].reset();
+                }
+            } else { // Otherwise, reset markers vertically
+                for (int y = 0; y < shipSize; y++) {
+                    markers[location.x][location.y + y].reset();
+                }
             }
         }
     }
+    
 
 
     public int getHeight() {

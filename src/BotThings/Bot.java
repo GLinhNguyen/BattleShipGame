@@ -36,6 +36,16 @@ public class Bot {
     public Location selectMove() {
         return Location.ZERO;
     }
+    public Location getNextMove() {
+        if (possibleMoves.isEmpty()) {
+            createValidMoveList(); // Reset the possible moves if empty
+        }
+        Random rand = new Random();
+        int index = rand.nextInt(possibleMoves.size());
+        Location selectedMove = possibleMoves.get(index);
+        possibleMoves.remove(index);
+        return selectedMove;
+    }
 
     public void reset() {
         createValidMoveList();

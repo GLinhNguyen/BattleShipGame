@@ -14,11 +14,11 @@ import Boards.SelectionGrid;
 public class NightmareBot extends Bot {
 
     private List<Location> shipHits;
-    
+
     private final boolean randomAi = true;
     private final boolean preferMovesFormingLine;
     private boolean maximizedAdjancentHits;
-    
+
     public NightmareBot(SelectionGrid playerGrid, boolean preferMovesFormingLine, boolean maximizedAdjancentHits) {
         super(playerGrid);
         this.preferMovesFormingLine = preferMovesFormingLine;
@@ -70,9 +70,9 @@ public class NightmareBot extends Bot {
      * @return A random move that has a good chance of hitting a ship again.
      */
     public Location getSmartMove() {
-       List<Location> possibleMoves = getAdjacentSmartMoves();
-       Collections.shuffle(possibleMoves);
-         return possibleMoves.get(0);
+        List<Location> possibleMoves = getAdjacentSmartMoves();
+        Collections.shuffle(possibleMoves);
+        return possibleMoves.get(0);
     }
 
     private Location getSmarterMove() {
@@ -121,11 +121,11 @@ public class NightmareBot extends Bot {
                 }
             }
         }
-    if(randomAi){
-        printLocationList("Ship Hits: ", shipHits);
-        printLocationList("Adjacent Smart Moves: ", result);
-    }
-    return result;
+        if(randomAi){
+            printLocationList("Ship Hits: ", shipHits);
+            printLocationList("Adjacent Smart Moves: ", result);
+        }
+        return result;
     }
 
 
@@ -190,19 +190,19 @@ public class NightmareBot extends Bot {
         Marker marker = playerGrid.getMarkerAtLocation(testLocation);
         if (marker.isShip()){
             shipHits.add(testLocation);
-           //Check if this is the last place of the ship
+            //Check if this is the last place of the ship
             List<Location> allLocationsOfShip = marker.getAssociatedShip().getOccupiedCoordinates();
             if (randomAi) printLocationList("All of ship found at: ", allLocationsOfShip);
             boolean shipDestroyed =containsAllLocations(allLocationsOfShip, shipHits);
             // If the ship is destroyed, remove all hits.
             if(shipDestroyed){
                 for (Location shipLocation : allLocationsOfShip){
-                   for(int i =0; i<shipHits.size(); i++){
-                       if (shipHits.get(i).equals(shipLocation)){
-                           shipHits.remove(i);
-                           if(randomAi) System.out.println("Ship destroyed" + shipLocation);
-                           break;
-                       }
+                    for(int i =0; i<shipHits.size(); i++){
+                        if (shipHits.get(i).equals(shipLocation)){
+                            shipHits.remove(i);
+                            if(randomAi) System.out.println("Ship destroyed" + shipLocation);
+                            break;
+                        }
                     }
                 }
             }
@@ -228,24 +228,24 @@ public class NightmareBot extends Bot {
             }
             if (!found) return false;
         }
-            return true;
-        }
+        return true;
+    }
     /**
-     * Counts the number of adjacent cells that have not been marked around the specified position.]
+     * Counts the number of adjacent cells that have not been marked around the specified position.
      * @param location The position to count adjacent cells.
      * @return The number of adjacent cells that have not been marked around the position.
      */
     private int getAdjacentEmptyCount(Location location){
-            List<Location> adjacentCells = getAdjacentCell(location);
-            int count = 0;
+        List<Location> adjacentCells = getAdjacentCell(location);
+        int count = 0;
 
-            for (Location adjacentCell : adjacentCells){
-                if (!playerGrid.getMarkerAtLocation(adjacentCell).isMarked()){
-                    count++;
-                }
+        for (Location adjacentCell : adjacentCells){
+            if (!playerGrid.getMarkerAtLocation(adjacentCell).isMarked()){
+                count++;
             }
-            return count;
         }
+        return count;
+    }
 
     /**
      * Tests if there are two adjacent ship hits in a direction from a test start point.
@@ -271,7 +271,7 @@ public class NightmareBot extends Bot {
     }
 
     @Override
-public void applyMove(Location move) {
+    public void applyMove(Location move) {
         Marker marker = playerGrid.getMarkerAtLocation(move);
         if (marker.isShip()) {
             marker.getAssociatedShip().destroySection();

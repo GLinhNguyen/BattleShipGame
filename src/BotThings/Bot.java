@@ -13,7 +13,7 @@ public class Bot {
 
     protected SelectionGrid playerGrid;
     protected List<Location> possibleMoves;
-    protected Bot opponent; // Add this line
+    protected Bot opponent;
 
     public Bot(SelectionGrid playerGrid) {
         this.playerGrid = playerGrid;
@@ -24,7 +24,7 @@ public class Bot {
         this.opponent = opponent;
     }
 
-    public void takeTurn() { // Add this method
+    public void takeTurn() {
         Location move = selectMove();
         opponent.applyMove(move);
     }
@@ -52,8 +52,8 @@ public class Bot {
     }
     public void placeShips() {
         Random rand = new Random();
-        int numberOfShips = 5; // Change this to the number of ships you want to place
-        int[] shipSizes = {2, 3, 3, 4, 5}; // Change this to the sizes of the ships you want to place
+        int numberOfShips = 5;
+        int[] shipSizes = {2, 3, 3, 4, 5};
 
         for (int i = 0; i < numberOfShips; i++) {
             int segments = shipSizes[i];

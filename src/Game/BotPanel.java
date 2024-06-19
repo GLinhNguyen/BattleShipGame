@@ -23,7 +23,8 @@ import javax.swing.*;
 
 import Boards.Location;
 import Boards.SelectionGrid;
-
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 public class BotPanel extends JPanel implements KeyListener {
     private StatusPanel statusPanel;
     private SelectionGrid computer1;
@@ -34,20 +35,21 @@ public class BotPanel extends JPanel implements KeyListener {
     private GameState gameState;
     public static boolean debugModeActive;
     private Image bgImage;
+    private JButton exitButton;
 
     private javax.swing.Timer turnTimer ;
+
   
 
 
     public BotPanel(int bot1Choice, int bot2Choice) {
-       
         setPreferredSize(new Dimension(1000, 800));
         setBackground(new Color(42, 136, 163));
-        
+
         gameState = GameState.PLACING_SHIPS;
         computer1 = new SelectionGrid(320, 0);
         computer2 = new SelectionGrid(320, computer1.getHeight() + 50);
-       
+
 
         // Initialize bots based on choices
         bot1 = createBot(bot1Choice, computer1);
@@ -59,6 +61,7 @@ public class BotPanel extends JPanel implements KeyListener {
         statusPanel.setBottomString("Bot 2's Turn");
         setFocusable(true);
         setFocusTraversalKeysEnabled(false);
+
         addKeyListener(new KeyListener() {
             @Override
             public void keyTyped(KeyEvent e) {
@@ -83,13 +86,38 @@ public class BotPanel extends JPanel implements KeyListener {
             }
         });
 
-         try {
+        try {
             bgImage = ImageIO.read(getClass().getResourceAsStream("/Graphics/BG-gamPanel.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
+        buttonPanel.setBounds(700, 600, 275, 41); // Adjust the position and size as needed
+        buttonPanel.setOpaque(false); // Ensure the panel is transparent if needed
+        buttonPanel.setLayout(null);
+        ImageIcon exit = new ImageIcon(getClass().getResource("/Graphics/exitbutton.png"));
+        exitButton = new JButton(exit);
+        exitButton.setFocusPainted(false);
+        exitButton.setRolloverEnabled(false);
+        exitButton.setMargin(new Insets(0, 0, 0, 0));
+        exitButton.setBorder(null);
+        exitButton.setContentAreaFilled(false);
+        exitButton.setBounds(680, 570, 275, 41);
+        buttonPanel.add(exitButton, BorderLayout.EAST);
+        exitButton.addActionListener(e -> exitToStartWindow());
+
+
+
 
     }
+    private void exitToStartWindow() {
+        JFrame currentFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
+        currentFrame.dispose();
+        new StartingWindow().startFrame.setVisible(true);;
+    }
+
+
 
     private Bot createBot(int choice, SelectionGrid grid) {
         if (choice == 0) {

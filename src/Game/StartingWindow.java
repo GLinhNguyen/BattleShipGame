@@ -9,7 +9,7 @@ import java.awt.event.*;
 import java.io.IOException;
 
 public class StartingWindow implements KeyListener {
-private JFrame startFrame;
+public JFrame startFrame;
 private JPanel mainPanel;
 private CardLayout cardLayout;
 private GamePanel gamePanel;

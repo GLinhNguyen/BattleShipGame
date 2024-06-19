@@ -40,6 +40,7 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
     private JButton restartButton;
     private JButton undoButton;
     private JButton redoButton;
+    private JButton exitButton;
     private Image bgImage;
     private JButton playvsBotButton;
     private JButton undo;
@@ -48,29 +49,29 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
     private Stack<Move> PlayerStack = new Stack<>();
     private Stack<Move> BotStack = new Stack<>();
 
-   
+
     public GamePanel(int aiChoice, int countdownDuration) {
         this.timeLimit = countdownDuration;
         setPreferredSize(new Dimension(1000, 800)); // Set to your desired dimensions
         currentState = GameState.PLACING_SHIPS;
         computer = new SelectionGrid(285, 0);
         playerGrid = new SelectionGrid(285, computer.getHeight() + 50);
-    
+
         if (aiChoice == 0) {
             aiController = new EasyBot(playerGrid);
         } else {
             aiController = new NightmareBot(playerGrid, aiChoice == 2, aiChoice == 2);
         }
-    
+
         Location statusPanelLocation = new Location(285, computer.getHeight() + 1);
         statusPanel = new StatusPanel(statusPanelLocation, computer.getWidth(), 49);
-    
+
         setLayout(new BorderLayout());
-    
+
         addMouseListener(this);
         addMouseMotionListener(this);
-        
-    
+
+
         // BUTTON PANEL
         // restartButton = new JButton("Restart");
         // restartButton.addActionListener(e -> restart());
@@ -78,8 +79,8 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
         buttonPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
         buttonPanel.setBounds(700, 600, 275, 41); // Adjust the position and size as needed
         buttonPanel.setOpaque(false); // Ensure the panel is transparent if needed
-        buttonPanel.setLayout(null); 
-       
+        buttonPanel.setLayout(null);
+
 
         //Restart Button (để sau)
         ImageIcon restart = new ImageIcon(getClass().getResource("/Graphics/restart.png"));
@@ -112,7 +113,7 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
             public void mouseEntered(MouseEvent e) {
                 undoButton.setIcon(hoverIcon);
             }
-    
+
             @Override
             public void mouseExited(MouseEvent e) {
                 undoButton.setIcon(undo);
@@ -131,46 +132,62 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
         buttonPanel.add(redoButton, BorderLayout.EAST);
 
         // Add hover effect of redo Button
-        ImageIcon hoverRedo = new ImageIcon(getClass().getResource("/Graphics/redoButton.png"));
+        ImageIcon hoverRedo = new ImageIcon(getClass().getResource("/Graphics/hoverRedo.png"));
         redoButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
                 redoButton.setIcon(hoverRedo);
             }
-    
+
             @Override
             public void mouseExited(MouseEvent e) {
                 redoButton.setIcon(redo);
             }
         });
+        ImageIcon exit = new ImageIcon(getClass().getResource("/Graphics/exitbutton.png"));
+        exitButton = new JButton(exit);
+        exitButton.setFocusPainted(false);
+        exitButton.setRolloverEnabled(false);
+        exitButton.setMargin(new Insets(0, 0, 0, 0));
+        exitButton.setBorder(null);
+        exitButton.setContentAreaFilled(false);
+        exitButton.setBounds(680, 670, 275, 41);
+        exitButton.addActionListener(e -> exitToStartWindow());
+        buttonPanel.add(exitButton, BorderLayout.EAST);
+
 
 
 
 
         add(buttonPanel);
         restart();
-    
+
         // Load the background image
-         try {
+        try {
             bgImage = ImageIO.read(getClass().getResourceAsStream("/Graphics/BG-gamPanel1.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-      
+
+    }
+    private void exitToStartWindow() {
+        JFrame currentFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
+        currentFrame.dispose();
+        new StartingWindow().startFrame.setVisible(true);;
     }
 
-    
-    
+
+
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        
+
         // Draw the background image
         if (bgImage != null) {
             g.drawImage(bgImage, 0, 0, getWidth(), getHeight(), this);
         }
-    
+
         // Draw other components
         computer.paint(g);
         playerGrid.paint(g);
@@ -178,16 +195,16 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
         if (gameState == GameState.PLACING_SHIPS) {
             placingShip.paint(g);
         }
-       
+
         drawCountdownTimer(g);
     }
-    
+
     public void handleInput(int keyCode) {
         if (keyCode == KeyEvent.VK_ESCAPE) {
             System.exit(1);
         } else if (keyCode == KeyEvent.VK_R) {
             restart();
-        } else if (gameState == GameState.PLACING_SHIPS && keyCode == KeyEvent.VK_W) {
+        } else if (gameState == GameState.PLACING_SHIPS && keyCode == KeyEvent.VK_Q) {
             placingShip.toggleSideways();
             updateShipPlacement(tempPlacingPosition);
         } else if (keyCode == KeyEvent.VK_D) {
@@ -196,7 +213,7 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
         repaint();
     }
 
-  
+
     private void drawCountdownTimer(Graphics g) {
         g.setColor(Color.WHITE);
         g.setFont(new Font("Efour Digital Pro", Font.BOLD, 30));
@@ -309,7 +326,7 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
         Location aiMove = aiController.selectMove();
         boolean hit = playerGrid.markLocation(aiMove);
         BotStack.push(new Move(aiMove, false,placingShipIndex)); // Add the move to the stack
-       
+
         String hitMiss = hit ? "Hit" : "Missed";
         String destroyed = "";
         if (hit && playerGrid.getMarkerAtLocation(aiMove).getAssociatedShip().isDestroyed()) {
@@ -320,7 +337,7 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
             gameState = GameState.GAME_LOSS;
             statusPanel.showGameOver(false);
             gameTimer.cancel();
-        }  
+        }
     }
     private void undo() {
         if (gameState == GameState.PLACING_SHIPS) {
@@ -328,7 +345,7 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
                 Move lastMove = PlayerStack.pop();
                 redoPlayerStack.push(lastMove); // Add to redo stack
                 playerGrid.removeShip(lastMove.getLocation());
-                
+
                 placingShipIndex--;
                 placingShip = new Ship(lastMove.getLocation(), new Location(playerGrid.getLocation().x + lastMove.getLocation().x * SelectionGrid.cellSize, playerGrid.getLocation().y + lastMove.getLocation().y * SelectionGrid.cellSize), SelectionGrid.boatSize[placingShipIndex], true);
                 updateShipPlacement(lastMove.getLocation());
@@ -344,7 +361,7 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 
             }
         }
-        
+
         repaint();
     }
     private void redo() {
@@ -365,7 +382,7 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
         repaint();
     }
 
-    
+
 
     private void tryMovePlacingShip(Location mousePosition) {
         if (playerGrid.isLocationWithinCoordinate(mousePosition)) {

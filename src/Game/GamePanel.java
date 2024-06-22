@@ -90,7 +90,7 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
         restartButton.setMargin(new Insets(0, 0, 0, 0));
         restartButton.setBorder(null);
         restartButton.setContentAreaFilled(false);
-        restartButton.setBounds(820, 13, 280, 50);
+        restartButton.setBounds(870, 13, 60, 50);
         restartButton.addActionListener(e -> restart());
         buttonPanel.add(restartButton, BorderLayout.EAST);
 
@@ -151,7 +151,7 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
         exitButton.setMargin(new Insets(0, 0, 0, 0));
         exitButton.setBorder(null);
         exitButton.setContentAreaFilled(false);
-        exitButton.setBounds(680, 670, 275, 41);
+        exitButton.setBounds(930, 13, 60, 50);
         exitButton.addActionListener(e -> exitToStartWindow());
         buttonPanel.add(exitButton, BorderLayout.EAST);
 
@@ -218,7 +218,7 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
         g.setColor(Color.WHITE);
         g.setFont(new Font("Efour Digital Pro", Font.BOLD, 30));
         String timerText = "Time: " + countdown + "s";
-        g.drawString(timerText, getWidth() - 210, 50);
+        g.drawString(timerText, 85, 85);
     }
 
     private void startGameTimer() {

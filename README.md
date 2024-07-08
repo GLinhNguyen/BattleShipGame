@@ -41,8 +41,10 @@ If players wish to witness a battle between two AI bots, they have the option to
 </p>
 </br>
 
-Two bots will take turns to strategically shoot at each other, and when one bot successfully hits a ship, the corresponding grid cell on the opponent's grid will glow yellow. Conversely, if a bot misses its target, the opponent's grid cell will turn Blue. The game continues in this manner until one of the bots successfully sinks all of the opponent's ships, achieving victory.
-![image](https://github.com/GLinhNguyen/BattleShipGame/assets/146911978/78130dd1-d875-4571-a6a1-56938abc12c1)
++ Two bots will take turns to strategically shoot at each other, and when one bot successfully hits a ship, the corresponding grid cell on the opponent's grid will glow yellow. Conversely, if a bot misses its target, the opponent's grid cell will turn Blue. The game continues in this manner until one of the bots successfully sinks all of the opponent's ships, achieving victory.
+<p align="center">
+  <img src="https://github.com/GLinhNguyen/BattleShipGame/assets/146911978/78130dd1-d875-4571-a6a1-56938abc12c1">
+</p>
 </br>
 
 ## Future Development:
